@@ -1,0 +1,1 @@
+pyinstaller --paths C:\Users\ZYJ\AppData\Local\Programs\Python\Python35-32\Lib\site-packages\PyQt5\Qt\bin -F -w main.py

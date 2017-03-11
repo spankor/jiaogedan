@@ -1,0 +1,16 @@
+<RCC>
+  <qresource prefix="src">
+    <file>src/border.png</file>
+    <file>src/background1.png</file>
+    <file>src/fxd.png</file>
+    <file>src/bd.png</file>
+    <file>src/cc.png</file>
+    <file>src/kc.png</file>
+    <file>src/ymd.png</file>
+    <file>src/zj.png</file>
+    <file>src/zdj.png</file>
+    <file>src/off.png</file>
+    <file>src/on.png</file>
+    <file>src/background.png</file>
+  </qresource>
+</RCC>
