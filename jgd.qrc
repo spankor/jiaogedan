@@ -1,7 +1,7 @@
 <RCC>
   <qresource prefix="src">
+    <file>src/cz.png</file>
     <file>src/border.png</file>
-    <file>src/background1.png</file>
     <file>src/fxd.png</file>
     <file>src/bd.png</file>
     <file>src/cc.png</file>
@@ -11,6 +11,9 @@
     <file>src/zdj.png</file>
     <file>src/off.png</file>
     <file>src/on.png</file>
-    <file>src/background.png</file>
+    <file>src/background1366.png</file>
+    <file>src/background1600.png</file>
+    <file>src/background1920.png</file>
+    <file>src/sizeSelected.png</file>
   </qresource>
 </RCC>

@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QFileDialog, QTableWidgetItem, QAbstractItemView, QMenu, QAction, QSplitter
-from PyQt5.QtCore import Qt, QPoint
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from jiaogedan import *
 import sys
 
@@ -13,6 +14,7 @@ sellgreen = "rgb(76,170,7)"
 buyred = "rgb(255,0,0)"
 numgreen = "rgb(76,170,7)"
 numred = "rgb(255,0,0)"
+sizeIcon = ":/src/src/sizeSelected.png"
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -27,6 +29,7 @@ class MainWindow(QMainWindow):
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.ui = Ui_Form()
         self.ui.setupUi(self)
+        self.setStyleSheet("#Form{background:url(:/src/src/background1366.png)}")
         self.dragPosition = QPoint(0, 0)
         self.mousePressedFlag = False
         self.ui.bdTbl.setColumnCount(11)
@@ -76,7 +79,17 @@ class MainWindow(QMainWindow):
         self.ui.zjTab.setStyleSheet("background:transparent")
         self.ui.bdTab.setStyleSheet("background:transparent")
         self.ui.ymdTab.setStyleSheet("background:transparent")
-        
+        menu = QMenu(self)
+        menu1 = QMenu("窗口宽度", self)
+        self.sizeAction1 = QAction(QIcon(sizeIcon), "1366", self, triggered = self.resize1366)
+        self.sizeAction2 = QAction(QIcon(), "1600", self, triggered = self.resize1600)
+        self.sizeAction3 = QAction(QIcon(), "1920", self, triggered = self.resize1920)
+        menu1.addAction(self.sizeAction1)
+        menu1.addAction(self.sizeAction2)
+        menu1.addAction(self.sizeAction3)
+        menu.addMenu(menu1)
+        menu.addAction(QAction("截图", self))
+        self.ui.czBtn.setMenu(menu)
         # mainSplitter=QSplitter(Qt.Vertical,self) 
         # upSplitter = QSplitter(Qt.Horizontal,mainSplitter)
         # upSplitter.addWidget(self.ui.frame00)
@@ -87,6 +100,7 @@ class MainWindow(QMainWindow):
         # self.setCentralWidget(mainSplitter)
     
     def build_connections(self):
+        self.ui.dragLbl1.installEventFilter(self)
         self.ui.closeBtn.clicked.connect(self.close)
         self.ui.yqBtn.clicked.connect(self.yqClicked)
         self.ui.jsBtn.clicked.connect(self.jsClicked)
@@ -232,7 +246,7 @@ class MainWindow(QMainWindow):
     def ymdTabClicked(self):
         self.ui.sLbl.setPixmap(QtGui.QPixmap(":/src/src/ymd.png"))
         self.ui.sStack.setCurrentIndex(1)
-
+        
     def mousePressEvent(self, event):
         self.mousePressedFlag = True
         self.dragPosition = event.globalPos() - self.frameGeometry().topLeft()
@@ -245,7 +259,46 @@ class MainWindow(QMainWindow):
         if self.mousePressedFlag:
             self.move(event.globalPos() - self.dragPosition)
             event.accept()
-            
+           
+    def resize1366(self):
+        self.setStyleSheet("#Form{background:url(:/src/src/background1366.png)}")
+        self.sizeAction1.setIcon(QIcon(sizeIcon))
+        self.sizeAction2.setIcon(QIcon())
+        self.sizeAction3.setIcon(QIcon())
+        self.reshapeMainWindow(1366)
+        
+    def resize1600(self):
+        self.setStyleSheet("#Form{background:url(:/src/src/background1600.png)}")
+        self.sizeAction1.setIcon(QIcon())
+        self.sizeAction2.setIcon(QIcon(sizeIcon))
+        self.sizeAction3.setIcon(QIcon())
+        self.reshapeMainWindow(1600)
+        
+    def resize1920(self):
+        self.setStyleSheet("#Form{background:url(:/src/src/background1920.png)}")
+        self.sizeAction1.setIcon(QIcon())
+        self.sizeAction2.setIcon(QIcon())
+        self.sizeAction3.setIcon(QIcon(sizeIcon))
+        self.reshapeMainWindow(1920)
+    
+    def reshapeMainWindow(self, width):
+        offset = width - self.width()
+        self.resize(width, self.height())
+        self.ui.frame01.resize(self.ui.frame01.width()+offset, self.ui.frame01.height())
+        self.ui.sStack.resize(self.ui.sStack.width()+offset, self.ui.sStack.height())
+        self.moveBtn(self.ui.cdBtn, offset)
+        self.moveBtn(self.ui.qcBtn, offset)
+        self.moveBtn(self.ui.gdBtn, offset)    
+    
+    def moveBtn(self, btn, offset):
+        btn.setGeometry(btn.x() + offset, btn.y(), btn.width(), btn.height())
+
+    def eventFilter(self, target, event):
+        if target == self.ui.dragLbl1:
+            if event.type() == QEvent.MouseButtonPress:
+                event.accept()
+        return False
+        
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     window = MainWindow()
