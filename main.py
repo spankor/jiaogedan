@@ -31,6 +31,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         self.setStyleSheet("#Form{background:url(:/src/src/background1366.png)}")
         self.dragPosition = QPoint(0, 0)
+        self.oldPos1 = 0
         self.mousePressedFlag = False
         self.ui.bdTbl.setColumnCount(11)
         headers  =  ( "合约代码", "交易类型", "委托价格",
@@ -101,6 +102,7 @@ class MainWindow(QMainWindow):
     
     def build_connections(self):
         self.ui.dragLbl1.installEventFilter(self)
+        self.ui.windowDragLbl.installEventFilter(self)
         self.ui.closeBtn.clicked.connect(self.close)
         self.ui.yqBtn.clicked.connect(self.yqClicked)
         self.ui.jsBtn.clicked.connect(self.jsClicked)
@@ -247,13 +249,13 @@ class MainWindow(QMainWindow):
         self.ui.sLbl.setPixmap(QtGui.QPixmap(":/src/src/ymd.png"))
         self.ui.sStack.setCurrentIndex(1)
         
-    def mousePressEvent(self, event):
-        self.mousePressedFlag = True
-        self.dragPosition = event.globalPos() - self.frameGeometry().topLeft()
-        event.accept()
+    # def mousePressEvent(self, event):
+        # self.mousePressedFlag = True
+        # self.dragPosition = event.globalPos() - self.frameGeometry().topLeft()
+        # event.accept()
  
-    def mouseReleaseEvent(self, event):
-        self.mousePressedFlag = False
+    # def mouseReleaseEvent(self, event):
+        # self.mousePressedFlag = False
     
     def mouseMoveEvent(self, event):
         if self.mousePressedFlag:
@@ -292,11 +294,38 @@ class MainWindow(QMainWindow):
     
     def moveBtn(self, btn, offset):
         btn.setGeometry(btn.x() + offset, btn.y(), btn.width(), btn.height())
-
+    
     def eventFilter(self, target, event):
         if target == self.ui.dragLbl1:
             if event.type() == QEvent.MouseButtonPress:
-                event.accept()
+                self.oldPos1 = self.ui.dragLbl1.x()
+                self.dragPosition = event.globalPos() - self.ui.dragLbl1.frameGeometry().topLeft()
+            if event.type() == QEvent.MouseMove:
+                self.ui.dragLbl1.move((event.globalPos() - self.dragPosition).x(), self.ui.dragLbl1.y())
+            if event.type() == QEvent.MouseButtonRelease:
+                offset = self.ui.dragLbl1.x() - self.oldPos1
+                self.ui.frame01.setGeometry(self.ui.frame01.x()+offset, self.ui.frame01.y(), self.ui.frame01.width()-offset, self.ui.frame01.height())
+                self.ui.sStack.setGeometry(self.ui.sStack.x(), self.ui.sStack.y(), self.ui.sStack.width()-offset, self.ui.sStack.height())
+                self.ui.frame00.resize(self.ui.frame00.width()+offset, self.ui.frame00.height())
+                self.moveBtn(self.ui.cdBtn, -offset)
+                self.moveBtn(self.ui.qcBtn, -offset)
+                self.moveBtn(self.ui.gdBtn, -offset)
+                self.moveBtn(self.ui.czBtn, offset)
+            if event.type() == QEvent.Enter:
+                self.ui.dragLbl1.setStyleSheet("background:green;")
+            if event.type() == QEvent.Leave:
+                self.ui.dragLbl1.setStyleSheet("background:transparent;")
+            event.accept()
+        if target == self.ui.windowDragLbl:
+            if event.type() == QEvent.MouseButtonPress:
+                self.dragPosition = event.globalPos() - self.frameGeometry().topLeft()
+            if event.type() == QEvent.MouseMove:
+                self.move(event.globalPos() - self.dragPosition)
+            if event.type() == QEvent.Enter:
+                self.ui.windowDragLbl.setStyleSheet("background:green;")
+            if event.type() == QEvent.Leave:
+                self.ui.windowDragLbl.setStyleSheet("background:transparent;")
+            event.accept()
         return False
         
 if __name__ == "__main__":
