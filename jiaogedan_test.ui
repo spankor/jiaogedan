@@ -32,7 +32,7 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">#Form{background:url(:/src/src/background1366.png)}</string>
+   <string notr="true"/>
   </property>
   <widget class="QPushButton" name="closeBtn">
    <property name="geometry">
@@ -1017,6 +1017,36 @@
      <string/>
     </property>
    </widget>
+   <widget class="QLineEdit" name="ssEdit">
+    <property name="geometry">
+     <rect>
+      <x>164</x>
+      <y>128</y>
+      <width>74</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="zddEdit">
+    <property name="geometry">
+     <rect>
+      <x>164</x>
+      <y>146</y>
+      <width>74</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="zdxEdit">
+    <property name="geometry">
+     <rect>
+      <x>164</x>
+      <y>163</y>
+      <width>75</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
    <zorder>zlcBtn</zorder>
    <zorder>fxdBtn</zorder>
    <zorder>sellBtn</zorder>
@@ -1063,6 +1093,9 @@
    <zorder>label_6</zorder>
    <zorder>label_7</zorder>
    <zorder>label</zorder>
+   <zorder>ssEdit</zorder>
+   <zorder>zddEdit</zorder>
+   <zorder>zdxEdit</zorder>
   </widget>
   <widget class="QFrame" name="frame01">
    <property name="geometry">
@@ -1170,11 +1203,6 @@
        <string>改单</string>
       </property>
      </widget>
-     <zorder>bdTbl</zorder>
-     <zorder>cdBtn</zorder>
-     <zorder>qcBtn</zorder>
-     <zorder>gdBtn</zorder>
-     <zorder>dragLbl1</zorder>
     </widget>
     <widget class="QWidget" name="page_2">
      <widget class="QTableWidget" name="ymdTbl">

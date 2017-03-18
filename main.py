@@ -4,6 +4,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from jiaogedan import *
 import sys
+import random
 
 styleTypes = ('yq', 'js', 'zlc')
 maiTypes = ('buy', 'sell')
@@ -15,6 +16,8 @@ buyred = "rgb(255,0,0)"
 numgreen = "rgb(76,170,7)"
 numred = "rgb(255,0,0)"
 sizeIcon = ":/src/src/sizeSelected.png"
+
+testKey = "off"
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -29,7 +32,8 @@ class MainWindow(QMainWindow):
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.ui = Ui_Form()
         self.ui.setupUi(self)
-        self.setStyleSheet("#Form{background:url(:/src/src/background1366.png)}")
+        if testKey == "on":
+            self.setStyleSheet("#Form{background:url(:/src/src/background1366.png)}")
         self.dragPosition = QPoint(0, 0)
         self.oldPos1 = 0
         self.mousePressedFlag = False
@@ -90,17 +94,22 @@ class MainWindow(QMainWindow):
         menu1.addAction(self.sizeAction3)
         menu.addMenu(menu1)
         menu.addAction(QAction("截图", self))
-        self.ui.czBtn.setMenu(menu)
-        # mainSplitter=QSplitter(Qt.Vertical,self) 
-        # upSplitter = QSplitter(Qt.Horizontal,mainSplitter)
-        # upSplitter.addWidget(self.ui.frame00)
-        # upSplitter.addWidget(self.ui.frame01)
-        # downSplitter = QSplitter(Qt.Horizontal,mainSplitter) 
-        # downSplitter.addWidget(self.ui.frame10)
-        # downSplitter.addWidget(self.ui.frame11)
-        # self.setCentralWidget(mainSplitter)
+        if testKey == "on":
+            self.ui.czBtn.setMenu(menu)
+       
+        self.ui.ssEdit.hide()
+        self.ui.zddEdit.hide()
+        self.ui.zdxEdit.hide()
+        self.sbls = [self.ui.s1l, self.ui.s2l, self.ui.s3l, self.ui.s4l, self.ui.s5l,
+                    self.ui.b1l, self.ui.b2l, self.ui.b3l, self.ui.b4l, self.ui.b5l]
     
     def build_connections(self):
+        self.ui.ssLbl.installEventFilter(self)
+        self.ui.zddLbl.installEventFilter(self)
+        self.ui.zdxLbl.installEventFilter(self)
+        self.ui.ssEdit.installEventFilter(self)
+        self.ui.zddEdit.installEventFilter(self)
+        self.ui.zdxEdit.installEventFilter(self)
         self.ui.dragLbl1.installEventFilter(self)
         self.ui.windowDragLbl.installEventFilter(self)
         self.ui.closeBtn.clicked.connect(self.close)
@@ -117,6 +126,7 @@ class MainWindow(QMainWindow):
         self.ui.zjTab.clicked.connect(self.zjTabClicked)
         self.ui.bdTab.clicked.connect(self.bdTabClicked)
         self.ui.ymdTab.clicked.connect(self.ymdTabClicked)
+        self.ui.zdjSpin.valueChanged.connect(self.zdSpinChanged)
 
     def yqClicked(self):
         self.styleType = styleTypes[0]
@@ -248,20 +258,21 @@ class MainWindow(QMainWindow):
     def ymdTabClicked(self):
         self.ui.sLbl.setPixmap(QtGui.QPixmap(":/src/src/ymd.png"))
         self.ui.sStack.setCurrentIndex(1)
-        
-    # def mousePressEvent(self, event):
-        # self.mousePressedFlag = True
-        # self.dragPosition = event.globalPos() - self.frameGeometry().topLeft()
-        # event.accept()
- 
-    # def mouseReleaseEvent(self, event):
-        # self.mousePressedFlag = False
-    
-    def mouseMoveEvent(self, event):
-        if self.mousePressedFlag:
-            self.move(event.globalPos() - self.dragPosition)
-            event.accept()
-           
+
+    def zdSpinChanged(self, value):
+        self.ui.s1.setText(self.baoliu2(value))
+        self.ui.s2.setText(self.baoliu2(value + 0.01))
+        self.ui.s3.setText(self.baoliu2(value + 0.02))
+        self.ui.s4.setText(self.baoliu2(value + 0.03))
+        self.ui.s5.setText(self.baoliu2(value + 0.04))
+        self.ui.b1.setText(self.baoliu2(value - 0.01))
+        self.ui.b2.setText(self.baoliu2(value - 0.02))
+        self.ui.b3.setText(self.baoliu2(value - 0.03))
+        self.ui.b4.setText(self.baoliu2(value - 0.04))
+        self.ui.b5.setText(self.baoliu2(value - 0.05))
+        for sb in self.sbls:
+            sb.setText(str(random.randint(100, 999)))
+            
     def resize1366(self):
         self.setStyleSheet("#Form{background:url(:/src/src/background1366.png)}")
         self.sizeAction1.setIcon(QIcon(sizeIcon))
@@ -295,6 +306,9 @@ class MainWindow(QMainWindow):
     def moveBtn(self, btn, offset):
         btn.setGeometry(btn.x() + offset, btn.y(), btn.width(), btn.height())
     
+    def baoliu2(self, f):
+        return "%.2f"%f
+    
     def eventFilter(self, target, event):
         if target == self.ui.dragLbl1:
             if event.type() == QEvent.MouseButtonPress:
@@ -325,6 +339,47 @@ class MainWindow(QMainWindow):
                 self.ui.windowDragLbl.setStyleSheet("background:green;")
             if event.type() == QEvent.Leave:
                 self.ui.windowDragLbl.setStyleSheet("background:transparent;")
+            event.accept()
+        if target == self.ui.ssLbl:
+            if event.type() == QEvent.MouseButtonPress:
+                self.ui.ssEdit.show()
+            event.accept()
+        if target == self.ui.ssEdit:
+            if event.type() == QEvent.Leave:
+                if self.ui.ssEdit.text():
+                    self.ui.ssLbl.setText("<= %s"%self.ui.ssEdit.text())
+                    self.ui.ssEdit.clear()
+                self.ui.ssEdit.hide()
+            event.accept()
+        if target == self.ui.zddLbl:
+            if event.type() == QEvent.MouseButtonPress:
+                self.ui.zddEdit.show()
+            event.accept()
+        if target == self.ui.zddEdit:
+            if event.type() == QEvent.Leave:
+                if self.ui.zddEdit.text():
+                    try:
+                        v = float(self.ui.zddEdit.text())
+                        self.ui.zddLbl.setText("<= %.2f"%v)
+                    except:
+                        pass
+                    self.ui.zddEdit.clear()
+                self.ui.zddEdit.hide()
+            event.accept()
+        if target == self.ui.zdxLbl:
+            if event.type() == QEvent.MouseButtonPress:
+                self.ui.zdxEdit.show()
+            event.accept()
+        if target == self.ui.zdxEdit:
+            if event.type() == QEvent.Leave:
+                if self.ui.zdxEdit.text():
+                    try:
+                        v = float(self.ui.zdxEdit.text())
+                        self.ui.zdxLbl.setText(">= %.2f"%v)
+                    except:
+                        pass
+                    self.ui.zdxEdit.clear()
+                self.ui.zdxEdit.hide()
             event.accept()
         return False
         
