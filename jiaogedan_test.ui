@@ -143,7 +143,7 @@
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>272.89</string>
+     <string>1524</string>
     </property>
     <property name="flat">
      <bool>true</bool>
@@ -184,7 +184,7 @@
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>1524.89</string>
+     <string>1524</string>
     </property>
     <property name="flat">
      <bool>true</bool>
@@ -315,7 +315,7 @@
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>272.89</string>
+     <string>1524</string>
     </property>
     <property name="flat">
      <bool>true</bool>
@@ -359,7 +359,7 @@
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>272.89</string>
+     <string>1524</string>
     </property>
     <property name="flat">
      <bool>true</bool>
@@ -400,7 +400,7 @@
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>272.89</string>
+     <string>1524</string>
     </property>
     <property name="flat">
      <bool>true</bool>
@@ -425,7 +425,7 @@
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>272.89</string>
+     <string>1524</string>
     </property>
     <property name="flat">
      <bool>true</bool>
@@ -491,8 +491,11 @@
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
+    <property name="decimals">
+     <number>0</number>
+    </property>
     <property name="maximum">
-     <double>4999.989999999999782</double>
+     <double>5000.000000000000000</double>
     </property>
    </widget>
    <widget class="QLabel" name="b2l">
@@ -568,7 +571,7 @@
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>272.89</string>
+     <string>1524</string>
     </property>
     <property name="flat">
      <bool>true</bool>
@@ -609,7 +612,7 @@
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>272.89</string>
+     <string>1524</string>
     </property>
     <property name="flat">
      <bool>true</bool>
@@ -688,7 +691,7 @@
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>272.89</string>
+     <string>1524</string>
     </property>
     <property name="flat">
      <bool>true</bool>
@@ -729,7 +732,7 @@
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>272.89</string>
+     <string>1524</string>
     </property>
     <property name="flat">
      <bool>true</bool>
@@ -893,7 +896,7 @@
      <enum>QFrame::Raised</enum>
     </property>
     <property name="text">
-     <string>&lt;= 290.57</string>
+     <string>&lt;= 2290.00</string>
     </property>
    </widget>
    <widget class="QLabel" name="zdxLbl">
@@ -914,7 +917,7 @@
      <enum>QFrame::Raised</enum>
     </property>
     <property name="text">
-     <string>&gt;= 257.68</string>
+     <string>&gt;= 1257.68</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_2">

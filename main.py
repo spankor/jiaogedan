@@ -126,7 +126,8 @@ class MainWindow(QMainWindow):
         self.ui.zjTab.clicked.connect(self.zjTabClicked)
         self.ui.bdTab.clicked.connect(self.bdTabClicked)
         self.ui.ymdTab.clicked.connect(self.ymdTabClicked)
-        self.ui.zdjSpin.valueChanged.connect(self.zdSpinChanged)
+        self.ui.zdjSpin.valueChanged.connect(self.zdjSpinChanged)
+        self.ui.hyCombo.currentIndexChanged.connect(self.hyComboChanged)
 
     def yqClicked(self):
         self.styleType = styleTypes[0]
@@ -259,19 +260,42 @@ class MainWindow(QMainWindow):
         self.ui.sLbl.setPixmap(QtGui.QPixmap(":/src/src/ymd.png"))
         self.ui.sStack.setCurrentIndex(1)
 
-    def zdSpinChanged(self, value):
-        self.ui.s1.setText(self.baoliu2(value))
-        self.ui.s2.setText(self.baoliu2(value + 0.01))
-        self.ui.s3.setText(self.baoliu2(value + 0.02))
-        self.ui.s4.setText(self.baoliu2(value + 0.03))
-        self.ui.s5.setText(self.baoliu2(value + 0.04))
-        self.ui.b1.setText(self.baoliu2(value - 0.01))
-        self.ui.b2.setText(self.baoliu2(value - 0.02))
-        self.ui.b3.setText(self.baoliu2(value - 0.03))
-        self.ui.b4.setText(self.baoliu2(value - 0.04))
-        self.ui.b5.setText(self.baoliu2(value - 0.05))
-        for sb in self.sbls:
-            sb.setText(str(random.randint(100, 999)))
+    def hyComboChanged(self, index):
+        if index == 0:
+            self.ui.zdjSpin.setDecimals(0)
+        else:
+            self.ui.zdjSpin.setDecimals(2)
+        self.ui.zdjSpin.setValue(0)
+        self.zdjSpinChanged(0)
+        
+    def zdjSpinChanged(self, value):
+        if self.ui.hyCombo.currentIndex() == 0:
+            self.ui.zdjSpin.setDecimals(0)
+            self.ui.s1.setText(self.baoliu(0, value))
+            self.ui.s2.setText(self.baoliu(0, value + 1))
+            self.ui.s3.setText(self.baoliu(0, value + 2))
+            self.ui.s4.setText(self.baoliu(0, value + 3))
+            self.ui.s5.setText(self.baoliu(0, value + 4))
+            self.ui.b1.setText(self.baoliu(0, value - 1))
+            self.ui.b2.setText(self.baoliu(0, value - 2))
+            self.ui.b3.setText(self.baoliu(0, value - 3))
+            self.ui.b4.setText(self.baoliu(0, value - 4))
+            self.ui.b5.setText(self.baoliu(0, value - 5))
+            for sb in self.sbls:
+                sb.setText(str(random.randint(1000, 9999)))  
+        else:
+            self.ui.s1.setText(self.baoliu(2, value))
+            self.ui.s2.setText(self.baoliu(2, value + 0.01))
+            self.ui.s3.setText(self.baoliu(2, value + 0.02))
+            self.ui.s4.setText(self.baoliu(2, value + 0.03))
+            self.ui.s5.setText(self.baoliu(2, value + 0.04))
+            self.ui.b1.setText(self.baoliu(2, value - 0.01))
+            self.ui.b2.setText(self.baoliu(2, value - 0.02))
+            self.ui.b3.setText(self.baoliu(2, value - 0.03))
+            self.ui.b4.setText(self.baoliu(2, value - 0.04))
+            self.ui.b5.setText(self.baoliu(2, value - 0.05))
+            for sb in self.sbls:
+                sb.setText(str(random.randint(100, 999)))
             
     def resize1366(self):
         self.setStyleSheet("#Form{background:url(:/src/src/background1366.png)}")
@@ -306,8 +330,10 @@ class MainWindow(QMainWindow):
     def moveBtn(self, btn, offset):
         btn.setGeometry(btn.x() + offset, btn.y(), btn.width(), btn.height())
     
-    def baoliu2(self, f):
-        return "%.2f"%f
+    def baoliu(self, n, f):
+        if n == 2:
+            return "%.2f"%f
+        return "%i"%f
     
     def eventFilter(self, target, event):
         if target == self.ui.dragLbl1:
