@@ -17,5 +17,7 @@
     <file>src/background1600.png</file>
     <file>src/background1920.png</file>
     <file>src/sizeSelected.png</file>
+    <file>src/tbl_white.png</file>
+    <file>src/tbl_yellow.png</file>
   </qresource>
 </RCC>

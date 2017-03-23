@@ -17,7 +17,7 @@ numgreen = "rgb(76,170,7)"
 numred = "rgb(255,0,0)"
 sizeIcon = ":/src/src/sizeSelected.png"
 
-testKey = "off"
+Pay = False
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -32,7 +32,7 @@ class MainWindow(QMainWindow):
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.ui = Ui_Form()
         self.ui.setupUi(self)
-        if testKey == "on":
+        if Pay:
             self.setStyleSheet("#Form{background:url(:/src/src/background1366.png)}")
         self.dragPosition = QPoint(0, 0)
         self.oldPos1 = 0
@@ -42,7 +42,9 @@ class MainWindow(QMainWindow):
                 "委托数量", "未成交数量", "报单状态", "报单类型",
                 "委托时间", "操作信息", "本地报单号", "报单号")  
         self.ui.bdTbl.setHorizontalHeaderLabels(headers)
-        self.ui.bdTbl.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        #self.ui.bdTbl.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.ui.bdTbl.verticalHeader().setVisible(False)
+        self.ui.bdTbl.setShowGrid(False)
         
         self.ui.ymdTbl.setColumnCount(8)
         headers  =  ( "类型", "状态", "触发条件",
@@ -94,7 +96,7 @@ class MainWindow(QMainWindow):
         menu1.addAction(self.sizeAction3)
         menu.addMenu(menu1)
         menu.addAction(QAction("截图", self))
-        if testKey == "on":
+        if Pay:
             self.ui.czBtn.setMenu(menu)
        
         self.ui.ssEdit.hide()
@@ -128,6 +130,7 @@ class MainWindow(QMainWindow):
         self.ui.ymdTab.clicked.connect(self.ymdTabClicked)
         self.ui.zdjSpin.valueChanged.connect(self.zdjSpinChanged)
         self.ui.hyCombo.currentIndexChanged.connect(self.hyComboChanged)
+        self.ui.qcBtn.clicked.connect(self.qcBtnClicked)
 
     def yqClicked(self):
         self.styleType = styleTypes[0]
@@ -267,7 +270,37 @@ class MainWindow(QMainWindow):
             self.ui.zdjSpin.setDecimals(2)
         self.ui.zdjSpin.setValue(0)
         self.zdjSpinChanged(0)
-        
+    
+    def getrnd6(self):
+        return str(random.randint(100000, 999999))
+    
+    def qcBtnClicked(self):
+        hydm = self.ui.hyCombo.currentText()
+        jylx = self.ui.yqBtn.text()+self.ui.kdcBtn.text()
+        wtjg = self.baoliu(0 if self.ui.hyCombo.currentIndex()==0 else 2, self.ui.zdjSpin.value())
+        countRow = self.ui.bdTbl.rowCount()
+        self.ui.bdTbl.insertRow(countRow)
+        self.ui.bdTbl.setRowHeight(countRow, 21)
+        self.ui.bdTbl.setItem(countRow, 0, self.getTableItem(countRow, hydm))
+        self.ui.bdTbl.setItem(countRow, 1, self.getTableItem(countRow, jylx))
+        self.ui.bdTbl.setItem(countRow, 2, self.getTableItem(countRow, wtjg))
+        self.ui.bdTbl.setItem(countRow, 3, self.getTableItem(countRow, '1'))
+        self.ui.bdTbl.setItem(countRow, 4, self.getTableItem(countRow, '1'))
+        self.ui.bdTbl.setItem(countRow, 5, self.getTableItem(countRow, '已报入'))
+        self.ui.bdTbl.setItem(countRow, 6, self.getTableItem(countRow, '正常报单'))
+        self.ui.bdTbl.setItem(countRow, 7, self.getTableItem(countRow, '13:34:41'))
+        self.ui.bdTbl.setItem(countRow, 8, self.getTableItem(countRow, '报单成功'))
+        self.ui.bdTbl.setItem(countRow, 9, self.getTableItem(countRow, self.getrnd6()))
+        self.ui.bdTbl.setItem(countRow, 10, self.getTableItem(countRow, '0'+self.getrnd6()))
+    
+    def getTableItem(self, rowCount, txt):
+        item = QTableWidgetItem(txt)
+        if rowCount % 2 == 0:
+            item.setBackground(QBrush(QPixmap(":/src/src/tbl_yellow.png")))
+        else:
+            item.setBackground(QBrush(QPixmap(":/src/src/tbl_white.png")))
+        return item
+    
     def zdjSpinChanged(self, value):
         if self.ui.hyCombo.currentIndex() == 0:
             self.ui.zdjSpin.setDecimals(0)
@@ -356,7 +389,7 @@ class MainWindow(QMainWindow):
             if event.type() == QEvent.Leave:
                 self.ui.dragLbl1.setStyleSheet("background:transparent;")
             event.accept()
-        if target == self.ui.windowDragLbl:
+        if target == self.ui.windowDragLbl and Pay:
             if event.type() == QEvent.MouseButtonPress:
                 self.dragPosition = event.globalPos() - self.frameGeometry().topLeft()
             if event.type() == QEvent.MouseMove:
