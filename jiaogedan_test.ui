@@ -1566,6 +1566,15 @@
      <height>151</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Agency FB</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#frame11{background:url(:/src/src/border.png);border: 1px solid rgb(160,160,160); }</string>
+   </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
    </property>
@@ -1577,7 +1586,7 @@
      <rect>
       <x>2</x>
       <y>23</y>
-      <width>532</width>
+      <width>595</width>
       <height>121</height>
      </rect>
     </property>

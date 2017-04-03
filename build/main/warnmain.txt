@@ -15,5 +15,5 @@ missing module named vms_lib - imported by platform, E:\Workspace\gupiaojiaogeda
 missing module named termios - imported by tty, E:\Workspace\gupiaojiaogedan_2017\main.py, getpass
 missing module named grp - imported by tarfile, shutil, E:\Workspace\gupiaojiaogedan_2017\main.py
 missing module named _dummy_threading - imported by dummy_threading, E:\Workspace\gupiaojiaogedan_2017\main.py
-missing module named org - imported by copy, E:\Workspace\gupiaojiaogedan_2017\main.py
 missing module named pwd - imported by posixpath, tarfile, shutil, http.server, webbrowser, E:\Workspace\gupiaojiaogedan_2017\main.py, netrc, getpass
+missing module named org - imported by copy, E:\Workspace\gupiaojiaogedan_2017\main.py

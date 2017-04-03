@@ -74,7 +74,10 @@ class MainWindow(QMainWindow):
         headers  =  ( "合约代码", "交易类型", "成交价格", "成交数量",
                 "成交时间","报单号", "成交流水号")  
         self.ui.cjTbl.setHorizontalHeaderLabels(headers)
-        self.ui.cjTbl.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.ui.cjTbl.setColumnWidth(6, 137)
+        #self.ui.cjTbl.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.ui.cjTbl.verticalHeader().setVisible(False)
+        self.ui.cjTbl.setShowGrid(False)
         
         buttons = [self.ui.s1,self.ui.s2,self.ui.s3,self.ui.s4,self.ui.s5,self.ui.b1,self.ui.b2,self.ui.b3,self.ui.b4,self.ui.b5]
         for i in range(0, 5):
@@ -104,6 +107,10 @@ class MainWindow(QMainWindow):
         self.ui.zdxEdit.hide()
         self.sbls = [self.ui.s1l, self.ui.s2l, self.ui.s3l, self.ui.s4l, self.ui.s5l,
                     self.ui.b1l, self.ui.b2l, self.ui.b3l, self.ui.b4l, self.ui.b5l]
+        self.init_params()
+    
+    def init_params(self):
+        self.history = []
     
     def build_connections(self):
         self.ui.ssLbl.installEventFilter(self)
@@ -130,6 +137,7 @@ class MainWindow(QMainWindow):
         self.ui.ymdTab.clicked.connect(self.ymdTabClicked)
         self.ui.zdjSpin.valueChanged.connect(self.zdjSpinChanged)
         self.ui.hyCombo.currentIndexChanged.connect(self.hyComboChanged)
+        self.ui.cdBtn.clicked.connect(self.cdBtnClicked)
         self.ui.qcBtn.clicked.connect(self.qcBtnClicked)
 
     def yqClicked(self):
@@ -271,13 +279,14 @@ class MainWindow(QMainWindow):
         self.ui.zdjSpin.setValue(0)
         self.zdjSpinChanged(0)
     
-    def getrnd6(self):
-        return str(random.randint(100000, 999999))
+    def getrnd(self, l):
+        return str(random.randint(10*(l-1), int("9"*l)))
     
-    def qcBtnClicked(self):
+    def cdBtnClicked(self):
         hydm = self.ui.hyCombo.currentText()
         jylx = self.ui.yqBtn.text()+self.ui.kdcBtn.text()
         wtjg = self.baoliu(0 if self.ui.hyCombo.currentIndex()==0 else 2, self.ui.zdjSpin.value())
+        self.history.append([hydm, jylx, wtjg])
         countRow = self.ui.bdTbl.rowCount()
         self.ui.bdTbl.insertRow(countRow)
         self.ui.bdTbl.setRowHeight(countRow, 21)
@@ -290,8 +299,8 @@ class MainWindow(QMainWindow):
         self.ui.bdTbl.setItem(countRow, 6, self.getTableItem(countRow, '正常报单'))
         self.ui.bdTbl.setItem(countRow, 7, self.getTableItem(countRow, '13:34:41'))
         self.ui.bdTbl.setItem(countRow, 8, self.getTableItem(countRow, '报单成功'))
-        self.ui.bdTbl.setItem(countRow, 9, self.getTableItem(countRow, self.getrnd6()))
-        self.ui.bdTbl.setItem(countRow, 10, self.getTableItem(countRow, '0'+self.getrnd6()))
+        self.ui.bdTbl.setItem(countRow, 9, self.getTableItem(countRow, self.getrnd(6)))
+        self.ui.bdTbl.setItem(countRow, 10, self.getTableItem(countRow, '0'+self.getrnd(6)))
     
     def getTableItem(self, rowCount, txt):
         item = QTableWidgetItem(txt)
@@ -300,6 +309,20 @@ class MainWindow(QMainWindow):
         else:
             item.setBackground(QBrush(QPixmap(":/src/src/tbl_white.png")))
         return item
+    
+    def qcBtnClicked(self):
+        for hist in self.history:
+            countRow = self.ui.cjTbl.rowCount()
+            self.ui.cjTbl.insertRow(countRow)
+            self.ui.cjTbl.setRowHeight(countRow, 21)
+            self.ui.cjTbl.setItem(countRow, 0, self.getTableItem(countRow, hist[0]))
+            self.ui.cjTbl.setItem(countRow, 1, self.getTableItem(countRow, hist[1]))
+            self.ui.cjTbl.setItem(countRow, 2, self.getTableItem(countRow, hist[2]))
+            self.ui.cjTbl.setItem(countRow, 3, self.getTableItem(countRow, '1'))
+            self.ui.cjTbl.setItem(countRow, 4, self.getTableItem(countRow, '13:43:41'))
+            self.ui.cjTbl.setItem(countRow, 5, self.getTableItem(countRow, '0'+self.getrnd(7)))
+            self.ui.cjTbl.setItem(countRow, 6, self.getTableItem(countRow, '17'+self.getrnd(14)))
+        self.history.clear()
     
     def zdjSpinChanged(self, value):
         if self.ui.hyCombo.currentIndex() == 0:
