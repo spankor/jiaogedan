@@ -286,15 +286,15 @@ class MainWindow(QMainWindow):
         hydm = self.ui.hyCombo.currentText()
         jylx = self.ui.yqBtn.text()+self.ui.kdcBtn.text()
         wtjg = self.baoliu(0 if self.ui.hyCombo.currentIndex()==0 else 2, self.ui.zdjSpin.value())
-        self.history.append([hydm, jylx, wtjg])
+        # self.history.append([hydm, jylx, wtjg])
         countRow = self.ui.bdTbl.rowCount()
         self.ui.bdTbl.insertRow(countRow)
         self.ui.bdTbl.setRowHeight(countRow, 21)
         self.ui.bdTbl.setItem(countRow, 0, self.getTableItem(countRow, hydm))
         self.ui.bdTbl.setItem(countRow, 1, self.getTableItem(countRow, jylx))
         self.ui.bdTbl.setItem(countRow, 2, self.getTableItem(countRow, wtjg))
-        self.ui.bdTbl.setItem(countRow, 3, self.getTableItem(countRow, '1'))
-        self.ui.bdTbl.setItem(countRow, 4, self.getTableItem(countRow, '1'))
+        self.ui.bdTbl.setItem(countRow, 3, self.getTableItem(countRow, str(self.ui.ssSpin.value())))
+        self.ui.bdTbl.setItem(countRow, 4, self.getTableItem(countRow, str(self.ui.ssSpin.value())))
         self.ui.bdTbl.setItem(countRow, 5, self.getTableItem(countRow, '已报入'))
         self.ui.bdTbl.setItem(countRow, 6, self.getTableItem(countRow, '正常报单'))
         self.ui.bdTbl.setItem(countRow, 7, self.getTableItem(countRow, '13:34:41'))
@@ -311,18 +311,22 @@ class MainWindow(QMainWindow):
         return item
     
     def qcBtnClicked(self):
-        for hist in self.history:
+        currentRow = self.ui.bdTbl.currentRow()
+        if currentRow >= 0:
             countRow = self.ui.cjTbl.rowCount()
             self.ui.cjTbl.insertRow(countRow)
             self.ui.cjTbl.setRowHeight(countRow, 21)
-            self.ui.cjTbl.setItem(countRow, 0, self.getTableItem(countRow, hist[0]))
-            self.ui.cjTbl.setItem(countRow, 1, self.getTableItem(countRow, hist[1]))
-            self.ui.cjTbl.setItem(countRow, 2, self.getTableItem(countRow, hist[2]))
-            self.ui.cjTbl.setItem(countRow, 3, self.getTableItem(countRow, '1'))
+            self.ui.cjTbl.setItem(countRow, 0, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.bdTbl, currentRow, 0)))
+            self.ui.cjTbl.setItem(countRow, 1, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.bdTbl, currentRow, 1)))
+            self.ui.cjTbl.setItem(countRow, 2, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.bdTbl, currentRow, 2)))
+            self.ui.cjTbl.setItem(countRow, 3, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.bdTbl, currentRow, 3)))
             self.ui.cjTbl.setItem(countRow, 4, self.getTableItem(countRow, '13:43:41'))
             self.ui.cjTbl.setItem(countRow, 5, self.getTableItem(countRow, '0'+self.getrnd(7)))
             self.ui.cjTbl.setItem(countRow, 6, self.getTableItem(countRow, '17'+self.getrnd(14)))
-        self.history.clear()
+            self.ui.bdTbl.removeRow(currentRow)
+    
+    def getItemTextFromTable(self, table, row, column):
+        return table.item(row, column).text()
     
     def zdjSpinChanged(self, value):
         if self.ui.hyCombo.currentIndex() == 0:
