@@ -324,6 +324,13 @@ class MainWindow(QMainWindow):
             self.ui.cjTbl.setItem(countRow, 5, self.getTableItem(countRow, '0'+self.getrnd(7)))
             self.ui.cjTbl.setItem(countRow, 6, self.getTableItem(countRow, '17'+self.getrnd(14)))
             self.ui.bdTbl.removeRow(currentRow)
+            self.updateStyleOfBdtbl(currentRow)
+    
+    def updateStyleOfBdtbl(self, currentRow):
+        for row in range(currentRow, self.ui.bdTbl.rowCount()):
+            for col in range(self.ui.bdTbl.columnCount()):
+                self.ui.bdTbl.setItem(row, col, self.getTableItem(row, self.getItemTextFromTable(self.ui.bdTbl, row, col)))
+                
     
     def getItemTextFromTable(self, table, row, column):
         return table.item(row, column).text()
