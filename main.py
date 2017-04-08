@@ -17,7 +17,7 @@ numgreen = "rgb(76,170,7)"
 numred = "rgb(255,0,0)"
 sizeIcon = ":/src/src/sizeSelected.png"
 
-Pay = False
+Pay = True
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):

@@ -1337,6 +1337,9 @@
      <height>151</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">#frame10{background:url(:/src/src/border.png);border: 1px solid rgb(160,160,160); }</string>
+   </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
    </property>
@@ -1364,6 +1367,11 @@
         <width>41</width>
         <height>64</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Agency FB</family>
+       </font>
       </property>
       <property name="text">
        <string>平仓</string>
