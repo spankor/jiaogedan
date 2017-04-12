@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from jiaogedan import *
+import login_ui
 import sys
 import random
 
@@ -19,6 +20,24 @@ sizeIcon = ":/src/src/sizeSelected.png"
 
 Pay = True
 
+class LoginDialog(QDialog):
+    loginState = pyqtSignal(int)
+    def __init__(self, parent=None):
+        super(LoginDialog, self).__init__(parent)
+        self.ui = login_ui.Ui_Form()
+        self.ui.setupUi(self)
+        self.flag = 0
+        self.ui.loginBtn.clicked.connect(self.login)
+        
+    def login(self):
+        if self.ui.usernameEdt.text() == 'abc' and self.ui.passwordEdt.text() == 'asdfgh':
+            self.flag = 1
+            self.close()
+    
+    def closeEvent(self, e):
+        self.loginState.emit(self.flag)
+        e.accept()
+
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -27,6 +46,9 @@ class MainWindow(QMainWindow):
         self.styleType = styleTypes[0]
         self.maiType = maiTypes[0]
         self.kpType = kpTypes[0]
+        self.dialog = LoginDialog()
+        self.dialog.loginState.connect(self.showOrNot)
+        self.dialog.exec()
         
     def init_ui(self):
         self.setWindowFlags(Qt.FramelessWindowHint)
@@ -140,6 +162,12 @@ class MainWindow(QMainWindow):
         self.ui.cdBtn.clicked.connect(self.cdBtnClicked)
         self.ui.qcBtn.clicked.connect(self.qcBtnClicked)
 
+    def showOrNot(self, flag):
+        if flag == 1:
+            self.show()
+        else:
+            sys.exit(0)
+        
     def yqClicked(self):
         self.styleType = styleTypes[0]
         self.ui.jsBtn.setStyleSheet(offStyle)
@@ -479,5 +507,5 @@ class MainWindow(QMainWindow):
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     window = MainWindow()
-    window.show()
+    #window.show()
     sys.exit(app.exec_())    
