@@ -18,7 +18,8 @@ numgreen = "rgb(76,170,7)"
 numred = "rgb(255,0,0)"
 sizeIcon = ":/src/src/sizeSelected.png"
 
-Pay = True
+Pay = False
+NeedLogin = True
 
 class LoginDialog(QDialog):
     loginState = pyqtSignal(int)
@@ -48,7 +49,10 @@ class MainWindow(QMainWindow):
         self.kpType = kpTypes[0]
         self.dialog = LoginDialog()
         self.dialog.loginState.connect(self.showOrNot)
-        self.dialog.exec()
+        if NeedLogin:
+            self.dialog.exec()
+        else:
+            self.show()
         
     def init_ui(self):
         self.setWindowFlags(Qt.FramelessWindowHint)
