@@ -1,0 +1,13 @@
+{
+    "SerialNo": "",
+    "ExchCode": "C004",
+    "oper_flag": 1,
+    "UserID": "USERIDVALUE",
+    "RspCode": "",
+    "RspMsg": "",
+    "user_id": "USERIDVALUE",
+    "password": "USERPWDVALUE",
+    "lan_ip": "123.12.12.12",
+    "www_ip": "123.12.12.12",
+    "session_key": ""
+}

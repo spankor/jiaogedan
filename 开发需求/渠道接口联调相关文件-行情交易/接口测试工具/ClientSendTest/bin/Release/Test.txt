@@ -1,0 +1,9 @@
+{
+    "SerialNo": "",
+    "ExchCode": "C999",
+    "oper_flag": 1,
+    "UserID": "0000000205",
+    "RspCode": "",
+    "RspMsg": "",
+    "rsp_encrypt_mode":"0"
+}

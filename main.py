@@ -18,8 +18,8 @@ numgreen = "rgb(76,170,7)"
 numred = "rgb(255,0,0)"
 sizeIcon = ":/src/src/sizeSelected.png"
 
-Pay = False
-NeedLogin = True
+Pay = True
+NeedLogin = False
 
 class LoginDialog(QDialog):
     loginState = pyqtSignal(int)
@@ -31,10 +31,15 @@ class LoginDialog(QDialog):
         self.ui.loginBtn.clicked.connect(self.login)
         
     def login(self):
-        if self.ui.usernameEdt.text() == 'abc' and self.ui.passwordEdt.text() == 'asdfgh':
+        if self.ui.usernameEdt.text() == 'abc' and self.ui.passwordEdt.text() == 'qwezxc':
             self.flag = 1
             self.close()
-    
+        if self.ui.usernameEdt.text() == 'admin' and self.ui.passwordEdt.text() == 'pxcnub':
+            self.flag = 1
+            global Pay
+            Pay = True
+            self.close()
+            
     def closeEvent(self, e):
         self.loginState.emit(self.flag)
         e.accept()
@@ -42,17 +47,16 @@ class LoginDialog(QDialog):
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
+        self.dialog = LoginDialog()
+        self.dialog.loginState.connect(self.showOrNot)
+        if NeedLogin:
+            self.dialog.exec()
         self.init_ui()
         self.build_connections()
         self.styleType = styleTypes[0]
         self.maiType = maiTypes[0]
         self.kpType = kpTypes[0]
-        self.dialog = LoginDialog()
-        self.dialog.loginState.connect(self.showOrNot)
-        if NeedLogin:
-            self.dialog.exec()
-        else:
-            self.show()
+        self.show()
         
     def init_ui(self):
         self.setWindowFlags(Qt.FramelessWindowHint)
@@ -84,7 +88,9 @@ class MainWindow(QMainWindow):
                 "开仓均价", "持仓均价", "持仓盈亏", "占用保证金",
                 "总持仓", "昨仓", "今仓")  
         self.ui.ccTbl.setHorizontalHeaderLabels(headers)
-        self.ui.ccTbl.setEditTriggers(QAbstractItemView.NoEditTriggers)
+#        self.ui.ccTbl.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.ui.ccTbl.verticalHeader().setVisible(False)
+        self.ui.ccTbl.setShowGrid(False)
         
         self.ui.kcTbl.setColumnCount(4)
         headers  =  ( "合约代码","当前库存", "可用库存", "交易冻结")  
@@ -165,12 +171,61 @@ class MainWindow(QMainWindow):
         self.ui.hyCombo.currentIndexChanged.connect(self.hyComboChanged)
         self.ui.cdBtn.clicked.connect(self.cdBtnClicked)
         self.ui.qcBtn.clicked.connect(self.qcBtnClicked)
+        
+        self.ui.kdcBtn.clicked.connect(self.kdcBtnClicked)
+        self.ui.pcBtn2.clicked.connect(self.pcBtn2Clicked)
+        self.ui.fsBtn.clicked.connect(self.fsBtnClicked)
 
     def showOrNot(self, flag):
-        if flag == 1:
-            self.show()
-        else:
+        if flag == 0:
             sys.exit(0)
+
+    def kdcBtnClicked(self):
+        hydm = self.ui.hyCombo.currentText()
+        ccfx = "多"
+        if self.maiType == maiTypes[1]:
+            ccfx = "空"
+        # self.history.append([hydm, jylx, wtjg])
+        countRow = self.ui.ccTbl.rowCount()
+        self.ui.ccTbl.insertRow(countRow)
+        self.ui.ccTbl.setRowHeight(countRow, 21)
+        self.ui.ccTbl.setItem(countRow, 0, self.getTableItem(countRow, hydm))
+        self.ui.ccTbl.setItem(countRow, 1, self.getTableItem(countRow, ccfx))
+        self.ui.ccTbl.setItem(countRow, 2, self.getTableItem(countRow, str(self.ui.ssSpin.value())))
+        self.ui.ccTbl.setItem(countRow, 3, self.getTableItem(countRow, str("0")))
+        self.ui.ccTbl.setItem(countRow, 4, self.getTableItem(countRow, str("0")))
+        self.ui.ccTbl.setItem(countRow, 5, self.getTableItem(countRow, '0'))
+        self.ui.ccTbl.setItem(countRow, 6, self.getTableItem(countRow, '0'))
+        self.ui.ccTbl.setItem(countRow, 7, self.getTableItem(countRow, str(self.ui.ssSpin.value())))
+        self.ui.ccTbl.setItem(countRow, 8, self.getTableItem(countRow, '0'))
+        self.ui.ccTbl.setItem(countRow, 9, self.getTableItem(countRow, '0'))
+
+    def clean_commo_from_text(self, text):
+        nt = "".join(text.split(","))
+        return nt
+        
+    def pcBtn2Clicked(self):
+        currentRow = self.ui.ccTbl.currentRow()
+        if currentRow < 0:
+            return
+        kyc = float(self.clean_commo_from_text(self.ui.ccTbl.item(currentRow, 2).text()))
+        ccjj = float(self.clean_commo_from_text(self.ui.ccTbl.item(currentRow, 4).text()))
+        kcjj = float(self.clean_commo_from_text(self.ui.ccTbl.item(currentRow, 3).text()))
+        if self.ui.hyCombo.currentIndex() == 0:
+            ccyk = kyc * (self.ui.zdjSpin.value() - ccjj) * 1
+            zybzj = kcjj * 0.13
+        if self.ui.hyCombo.currentIndex() == 1:
+            ccyk = kyc * (self.ui.zdjSpin.value() - ccjj) * 1000
+            zybzj = kcjj * 1100
+        if self.ui.hyCombo.currentIndex() == 2:
+            ccyk = kyc * (self.ui.zdjSpin.value() - ccjj) * 100
+            zybzj = kcjj * 11
+        self.ui.ccTbl.item(currentRow, 5).setText(self.baoliu(2, ccyk))
+        self.ui.ccTbl.item(currentRow, 6).setText(self.baoliu(2, zybzj))
+        self.ui.ccTbl.item(currentRow, 7).setText(str(int(kyc)))
+        
+    def fsBtnClicked(self):
+        self.ui.ccTbl.removeRow(self.ui.ccTbl.currentRow())
         
     def yqClicked(self):
         self.styleType = styleTypes[0]
@@ -352,7 +407,7 @@ class MainWindow(QMainWindow):
             self.ui.cjTbl.setItem(countRow, 1, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.bdTbl, currentRow, 1)))
             self.ui.cjTbl.setItem(countRow, 2, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.bdTbl, currentRow, 2)))
             self.ui.cjTbl.setItem(countRow, 3, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.bdTbl, currentRow, 3)))
-            self.ui.cjTbl.setItem(countRow, 4, self.getTableItem(countRow, '13:43:41'))
+            self.ui.cjTbl.setItem(countRow, 4, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.bdTbl, currentRow, 7)))
             self.ui.cjTbl.setItem(countRow, 5, self.getTableItem(countRow, '0'+self.getrnd(7)))
             self.ui.cjTbl.setItem(countRow, 6, self.getTableItem(countRow, '17'+self.getrnd(14)))
             self.ui.bdTbl.removeRow(currentRow)

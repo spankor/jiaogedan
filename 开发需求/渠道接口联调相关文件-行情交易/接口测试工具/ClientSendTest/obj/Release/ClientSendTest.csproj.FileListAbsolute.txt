@@ -1,0 +1,2 @@
+E:\Workspace\gupiaojiaogedan_2017\开发需求\渠道接口联调相关文件-行情交易\接口测试工具\ClientSendTest\obj\Release\渠道终端测试程序.exe
+E:\Workspace\gupiaojiaogedan_2017\开发需求\渠道接口联调相关文件-行情交易\接口测试工具\ClientSendTest\obj\Release\渠道终端测试程序.pdb

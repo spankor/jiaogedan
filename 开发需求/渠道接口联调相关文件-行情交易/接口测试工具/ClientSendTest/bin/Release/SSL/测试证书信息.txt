@@ -1,0 +1,4 @@
+证书编号：       C000
+默认3DES密钥：   FAJA2LFA9WR9FSASF92FMMAF
+3DES加密IV向量： 8A402C31
+公钥证书名称：   server.crt
