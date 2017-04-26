@@ -32,7 +32,7 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true"/>
+   <string notr="true">#Form{background:url(:/src/src/background1920.png)}</string>
   </property>
   <widget class="QPushButton" name="closeBtn">
    <property name="geometry">
@@ -1143,6 +1143,9 @@
         <height>194</height>
        </rect>
       </property>
+      <property name="contextMenuPolicy">
+       <enum>Qt::CustomContextMenu</enum>
+      </property>
       <property name="frameShape">
        <enum>QFrame::NoFrame</enum>
       </property>
@@ -1696,6 +1699,35 @@
    </property>
    <property name="text">
     <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="sysBtn">
+   <property name="geometry">
+    <rect>
+     <x>19</x>
+     <y>6</y>
+     <width>19</width>
+     <height>48</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset resource="jgd.qrc">
+     <normaloff>:/src/src/sys.png</normaloff>:/src/src/sys.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>19</width>
+     <height>48</height>
+    </size>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
    </property>
   </widget>
  </widget>

@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="src">
+    <file>src/sys.png</file>
     <file>src/xd.png</file>
     <file>src/cjls.png</file>
     <file>src/xiegan.png</file>

@@ -75,7 +75,12 @@ class MainWindow(QMainWindow):
         #self.ui.bdTbl.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.ui.bdTbl.verticalHeader().setVisible(False)
         self.ui.bdTbl.setShowGrid(False)
-        
+        self.bdMenu = QMenu()
+        self.bdMenuDeleteAction = QAction("删除", self)
+        self.bdMenuDeleteAction.triggered.connect(self.bdTblDeleteARow)
+        self.bdMenu.addAction(self.bdMenuDeleteAction)
+        self.ui.bdTbl.customContextMenuRequested.connect(self.openBdTblMenu)
+
         self.ui.ymdTbl.setColumnCount(8)
         headers  =  ( "类型", "状态", "触发条件",
                 "合约代码", "交易类型", "价格", "手数",
@@ -146,6 +151,34 @@ class MainWindow(QMainWindow):
         self.ui.zdxEdit.hide()
         self.sbls = [self.ui.s1l, self.ui.s2l, self.ui.s3l, self.ui.s4l, self.ui.s5l,
                     self.ui.b1l, self.ui.b2l, self.ui.b3l, self.ui.b4l, self.ui.b5l]
+        sysCdMenu1 = QMenu("当日查询", self)
+        sysCdMenu1.addAction(QAction("委托/申报", self))
+        sysCdMenu1.addAction(QAction("成交查询", self))
+        sysCdMenu1.addAction(QAction("延期持仓明细", self))
+        sysCdMenu1.addAction(QAction("出入金明细", self))
+        sysCdMenu2 = QMenu("历史查询", self)
+        sysCdMenu3 = QMenu("风险查询", self)
+        sysMenu = QMenu(self)
+        sysMenu.addAction(QAction("客户资金库存及持仓", self))
+        sysMenu.addAction(QAction("交收行情", self))
+        sysMenu.addAction(QAction("显示交易状态", self))
+        sysMenu.addAction(QAction("延期平仓试算", self))
+        sysMenu.addAction(QAction("出入金", self))
+        sysMenu.addAction(QAction("提货", self))
+        sysMenu.addAction(QAction("登录密码修改", self))
+        sysMenu.addAction(QAction("资金密码修改", self))
+        sysMenu.addAction(QAction("会员公告查询", self))
+        sysMenu.addMenu(sysCdMenu1)
+        sysMenu.addMenu(sysCdMenu2)
+        sysMenu.addMenu(sysCdMenu3)
+        sysMenu.addAction(QAction("清除缓存数据", self))
+        sysMenu.addSeparator()
+        sysMenu.addAction(QAction("选项设置", self))
+        sysMenu.addAction(QAction("使用说明", self))
+        sysMenu.addSeparator()
+        sysMenu.addAction(QAction("退出交易", self))
+        self.ui.sysBtn.setMenu(sysMenu)
+
         self.init_params()
     
     def init_params(self):
@@ -219,6 +252,17 @@ class MainWindow(QMainWindow):
             return
         self.ui.cjTbl.removeRow(currentRow)
         self.updateStyleOfBdtbl(self.ui.cjTbl, currentRow)
+
+    def openBdTblMenu(self, pos):
+        pos += (self.ui.frame01.pos() + self.ui.bdTbl.pos() + QPoint(0, 50))
+        self.bdMenu.exec_(self.mapToGlobal(pos))
+
+    def bdTblDeleteARow(self):
+        currentRow = self.ui.bdTbl.currentRow()
+        if currentRow < 0:
+            return
+        self.ui.bdTbl.removeRow(currentRow)
+        self.updateStyleOfBdtbl(self.ui.bdTbl, currentRow)
         
     def clean_commo_from_text(self, text):
         nt = "".join(text.split(","))
@@ -474,6 +518,8 @@ class MainWindow(QMainWindow):
             self.ui.b3.setText(self.baoliu(0, value - 3))
             self.ui.b4.setText(self.baoliu(0, value - 4))
             self.ui.b5.setText(self.baoliu(0, value - 5))
+            self.ui.zddLbl.setText("<= %s"%self.baoliu(2, self.ui.zdjSpin.value()*1.08))
+            self.ui.zdxLbl.setText(">= %s"%self.baoliu(2, self.ui.zdjSpin.value()*0.92))
             for sb in self.sbls:
                 sb.setText(str(random.randint(1000, 9999)))  
         else:
@@ -487,8 +533,14 @@ class MainWindow(QMainWindow):
             self.ui.b3.setText(self.baoliu(2, value - 0.03))
             self.ui.b4.setText(self.baoliu(2, value - 0.04))
             self.ui.b5.setText(self.baoliu(2, value - 0.05))
-            for sb in self.sbls:
-                sb.setText(str(random.randint(100, 999)))
+            if self.ui.hyCombo.currentIndex() in (1,2):
+                self.ui.zddLbl.setText("<= %s"%self.baoliu(2, self.ui.zdjSpin.value()*1.06))
+                self.ui.zdxLbl.setText(">= %s"%self.baoliu(2, self.ui.zdjSpin.value()*0.94))
+                for sb in self.sbls:
+                    sb.setText(str(random.randint(10, 99)))
+            else:
+                for sb in self.sbls:
+                    sb.setText(str(random.randint(100, 999)))
             
     def resize1366(self):
         self.setStyleSheet("#Form{background:url(:/src/src/background1366.png)}")
@@ -516,6 +568,7 @@ class MainWindow(QMainWindow):
         self.resize(width, self.height())
         self.ui.frame01.resize(self.ui.frame01.width()+offset, self.ui.frame01.height())
         self.ui.sStack.resize(self.ui.sStack.width()+offset, self.ui.sStack.height())
+        self.ui.frame11.resize(self.ui.frame11.width()+offset, self.ui.frame11.height())
         self.moveBtn(self.ui.cdBtn, offset)
         self.moveBtn(self.ui.qcBtn, offset)
         self.moveBtn(self.ui.gdBtn, offset)    
@@ -549,7 +602,7 @@ class MainWindow(QMainWindow):
             if event.type() == QEvent.Leave:
                 self.ui.dragLbl1.setStyleSheet("background:transparent;")
             event.accept()
-        if target == self.ui.dragLbl2:
+        if target == self.ui.dragLbl2 and Pay:
             if event.type() == QEvent.MouseButtonPress:
                 self.oldPos2 = self.ui.dragLbl2.x()
                 self.dragPosition = event.globalPos() - self.ui.dragLbl2.frameGeometry().topLeft()
