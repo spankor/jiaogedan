@@ -1502,7 +1502,7 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>374</width>
+      <width>185</width>
       <height>20</height>
      </rect>
     </property>
@@ -1652,6 +1652,31 @@
    </property>
    <property name="text">
     <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="fLbl">
+   <property name="geometry">
+    <rect>
+     <x>418</x>
+     <y>226</y>
+     <width>85</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Agency FB</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-image:url(:/src/src/cjls.png)</string>
+   </property>
+   <property name="text">
+    <string>成交流水</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="dragLbl2">

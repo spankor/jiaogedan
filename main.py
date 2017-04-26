@@ -18,7 +18,7 @@ numgreen = "rgb(76,170,7)"
 numred = "rgb(255,0,0)"
 sizeIcon = ":/src/src/sizeSelected.png"
 
-Pay = False
+Pay = True
 NeedLogin = False
 
 class LoginDialog(QDialog):
@@ -558,12 +558,12 @@ class MainWindow(QMainWindow):
             if event.type() == QEvent.MouseButtonRelease:
                 offset = self.ui.dragLbl2.x() - self.oldPos2
                 self.ui.frame11.setGeometry(self.ui.frame11.x()+offset, self.ui.frame11.y(), self.ui.frame11.width()-offset, self.ui.frame11.height())
-                # self.ui.sStack.setGeometry(self.ui.sStack.x(), self.ui.sStack.y(), self.ui.sStack.width()-offset, self.ui.sStack.height())
+                self.moveBtn(self.ui.fLbl, offset)
+                self.ui.tStack.setGeometry(self.ui.tStack.x(), self.ui.tStack.y(), self.ui.tStack.width()+offset, self.ui.tStack.height())
                 self.ui.frame10.resize(self.ui.frame10.width()+offset, self.ui.frame10.height())
-                # self.moveBtn(self.ui.cdBtn, -offset)
-                # self.moveBtn(self.ui.qcBtn, -offset)
-                # self.moveBtn(self.ui.gdBtn, -offset)
-                # self.moveBtn(self.ui.czBtn, offset)
+                self.ui.ccTbl.resize(self.ui.ccTbl.width()+offset, self.ui.ccTbl.height())
+                self.moveBtn(self.ui.pcBtn2, offset)
+                self.moveBtn(self.ui.fsBtn, offset)
             if event.type() == QEvent.Enter:
                 self.ui.dragLbl2.setStyleSheet("background:green;")
             if event.type() == QEvent.Leave:
