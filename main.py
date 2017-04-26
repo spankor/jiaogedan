@@ -18,7 +18,7 @@ numgreen = "rgb(76,170,7)"
 numred = "rgb(255,0,0)"
 sizeIcon = ":/src/src/sizeSelected.png"
 
-Pay = True
+Pay = False
 NeedLogin = False
 
 class LoginDialog(QDialog):
@@ -34,7 +34,7 @@ class LoginDialog(QDialog):
         if self.ui.usernameEdt.text() == 'abc' and self.ui.passwordEdt.text() == 'qwezxc':
             self.flag = 1
             self.close()
-        if self.ui.usernameEdt.text() == 'admin' and self.ui.passwordEdt.text() == 'pxcnub':
+        if self.ui.usernameEdt.text() == 'admin' and self.ui.passwordEdt.text() == 'corypi':
             self.flag = 1
             global Pay
             Pay = True
@@ -95,13 +95,15 @@ class MainWindow(QMainWindow):
         self.ui.kcTbl.setColumnCount(4)
         headers  =  ( "合约代码","当前库存", "可用库存", "交易冻结")  
         self.ui.kcTbl.setHorizontalHeaderLabels(headers)
-        self.ui.kcTbl.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.ui.kcTbl.verticalHeader().setVisible(False)
+        self.ui.kcTbl.setShowGrid(False)
         
         self.ui.zjTbl.setColumnCount(4)
         headers  =  ( "当前余额", "可用金额", "交易冻结资金", "浮动盈亏")  
         self.ui.zjTbl.setHorizontalHeaderLabels(headers)
         self.ui.zjTbl.setEditTriggers(QAbstractItemView.NoEditTriggers)
         
+    #成交单
         self.ui.cjTbl.setColumnCount(7)
         headers  =  ( "合约代码", "交易类型", "成交价格", "成交数量",
                 "成交时间","报单号", "成交流水号")  
@@ -110,6 +112,11 @@ class MainWindow(QMainWindow):
         #self.ui.cjTbl.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.ui.cjTbl.verticalHeader().setVisible(False)
         self.ui.cjTbl.setShowGrid(False)
+        self.cjMenu = QMenu()
+        self.cjMenuDeleteAction = QAction("删除", self)
+        self.cjMenuDeleteAction.triggered.connect(self.cjTblDeleteARow)
+        self.cjMenu.addAction(self.cjMenuDeleteAction)
+        self.ui.cjTbl.customContextMenuRequested.connect(self.openCjTblMenu)
         
         buttons = [self.ui.s1,self.ui.s2,self.ui.s3,self.ui.s4,self.ui.s5,self.ui.b1,self.ui.b2,self.ui.b3,self.ui.b4,self.ui.b5]
         for i in range(0, 5):
@@ -152,6 +159,7 @@ class MainWindow(QMainWindow):
         self.ui.zddEdit.installEventFilter(self)
         self.ui.zdxEdit.installEventFilter(self)
         self.ui.dragLbl1.installEventFilter(self)
+        self.ui.dragLbl2.installEventFilter(self)
         self.ui.windowDragLbl.installEventFilter(self)
         self.ui.closeBtn.clicked.connect(self.close)
         self.ui.yqBtn.clicked.connect(self.yqClicked)
@@ -171,7 +179,8 @@ class MainWindow(QMainWindow):
         self.ui.hyCombo.currentIndexChanged.connect(self.hyComboChanged)
         self.ui.cdBtn.clicked.connect(self.cdBtnClicked)
         self.ui.qcBtn.clicked.connect(self.qcBtnClicked)
-        
+        self.ui.gdBtn.clicked.connect(self.gdBtnClicked)
+
         self.ui.kdcBtn.clicked.connect(self.kdcBtnClicked)
         self.ui.pcBtn2.clicked.connect(self.pcBtn2Clicked)
         self.ui.fsBtn.clicked.connect(self.fsBtnClicked)
@@ -200,6 +209,17 @@ class MainWindow(QMainWindow):
         self.ui.ccTbl.setItem(countRow, 8, self.getTableItem(countRow, '0'))
         self.ui.ccTbl.setItem(countRow, 9, self.getTableItem(countRow, '0'))
 
+    def openCjTblMenu(self, pos):
+        pos += (self.ui.frame11.pos() + self.ui.cjTbl.pos())
+        self.cjMenu.exec_(self.mapToGlobal(pos))
+
+    def cjTblDeleteARow(self):
+        currentRow = self.ui.cjTbl.currentRow()
+        if currentRow < 0:
+            return
+        self.ui.cjTbl.removeRow(currentRow)
+        self.updateStyleOfBdtbl(self.ui.cjTbl, currentRow)
+        
     def clean_commo_from_text(self, text):
         nt = "".join(text.split(","))
         return nt
@@ -225,7 +245,11 @@ class MainWindow(QMainWindow):
         self.ui.ccTbl.item(currentRow, 7).setText(str(int(kyc)))
         
     def fsBtnClicked(self):
-        self.ui.ccTbl.removeRow(self.ui.ccTbl.currentRow())
+        currentRow = self.ui.ccTbl.currentRow()
+        if currentRow < 0:
+    	    return
+        self.ui.ccTbl.removeRow(currentRow)
+        self.updateStyleOfBdtbl(self.ui.ccTbl, currentRow)
         
     def yqClicked(self):
         self.styleType = styleTypes[0]
@@ -399,24 +423,39 @@ class MainWindow(QMainWindow):
     
     def qcBtnClicked(self):
         currentRow = self.ui.bdTbl.currentRow()
-        if currentRow >= 0:
-            countRow = self.ui.cjTbl.rowCount()
-            self.ui.cjTbl.insertRow(countRow)
-            self.ui.cjTbl.setRowHeight(countRow, 21)
-            self.ui.cjTbl.setItem(countRow, 0, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.bdTbl, currentRow, 0)))
-            self.ui.cjTbl.setItem(countRow, 1, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.bdTbl, currentRow, 1)))
-            self.ui.cjTbl.setItem(countRow, 2, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.bdTbl, currentRow, 2)))
-            self.ui.cjTbl.setItem(countRow, 3, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.bdTbl, currentRow, 3)))
-            self.ui.cjTbl.setItem(countRow, 4, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.bdTbl, currentRow, 7)))
-            self.ui.cjTbl.setItem(countRow, 5, self.getTableItem(countRow, '0'+self.getrnd(7)))
-            self.ui.cjTbl.setItem(countRow, 6, self.getTableItem(countRow, '17'+self.getrnd(14)))
-            self.ui.bdTbl.removeRow(currentRow)
-            self.updateStyleOfBdtbl(currentRow)
-    
-    def updateStyleOfBdtbl(self, currentRow):
-        for row in range(currentRow, self.ui.bdTbl.rowCount()):
-            for col in range(self.ui.bdTbl.columnCount()):
-                self.ui.bdTbl.setItem(row, col, self.getTableItem(row, self.getItemTextFromTable(self.ui.bdTbl, row, col)))
+        if currentRow < 0:
+            return
+        countRow = self.ui.cjTbl.rowCount()
+        self.ui.cjTbl.insertRow(countRow)
+        self.ui.cjTbl.setRowHeight(countRow, 21)
+        self.ui.cjTbl.setItem(countRow, 0, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.bdTbl, currentRow, 0)))
+        self.ui.cjTbl.setItem(countRow, 1, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.bdTbl, currentRow, 1)))
+        self.ui.cjTbl.setItem(countRow, 2, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.bdTbl, currentRow, 2)))
+        self.ui.cjTbl.setItem(countRow, 3, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.bdTbl, currentRow, 3)))
+        self.ui.cjTbl.setItem(countRow, 4, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.bdTbl, currentRow, 7)))
+        self.ui.cjTbl.setItem(countRow, 5, self.getTableItem(countRow, '0'+self.getrnd(7)))
+        self.ui.cjTbl.setItem(countRow, 6, self.getTableItem(countRow, '17'+self.getrnd(14)))
+        self.ui.bdTbl.removeRow(currentRow)
+        self.updateStyleOfBdtbl(self.ui.bdTbl, currentRow)
+
+    def gdBtnClicked(self):
+        currentRow = self.ui.cjTbl.currentRow()
+        if currentRow < 0:
+            return
+        countRow = self.ui.kcTbl.rowCount()
+        self.ui.kcTbl.insertRow(countRow)
+        self.ui.kcTbl.setRowHeight(countRow, 21)
+        self.ui.kcTbl.setItem(countRow, 0, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.cjTbl, currentRow, 0)))
+        self.ui.kcTbl.setItem(countRow, 1, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.cjTbl, currentRow, 3)))
+        self.ui.kcTbl.setItem(countRow, 2, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.cjTbl, currentRow, 3)))
+        self.ui.kcTbl.setItem(countRow, 3, self.getTableItem(countRow, '0'))
+        self.ui.cjTbl.removeRow(currentRow)
+        self.updateStyleOfBdtbl(self.ui.cjTbl, currentRow)
+
+    def updateStyleOfBdtbl(self, table, currentRow):
+        for row in range(currentRow, table.rowCount()):
+            for col in range(table.columnCount()):
+                table.setItem(row, col, self.getTableItem(row, self.getItemTextFromTable(table, row, col)))
                 
     
     def getItemTextFromTable(self, table, row, column):
@@ -490,7 +529,7 @@ class MainWindow(QMainWindow):
         return "%i"%f
     
     def eventFilter(self, target, event):
-        if target == self.ui.dragLbl1:
+        if target == self.ui.dragLbl1 and Pay:
             if event.type() == QEvent.MouseButtonPress:
                 self.oldPos1 = self.ui.dragLbl1.x()
                 self.dragPosition = event.globalPos() - self.ui.dragLbl1.frameGeometry().topLeft()
@@ -509,6 +548,26 @@ class MainWindow(QMainWindow):
                 self.ui.dragLbl1.setStyleSheet("background:green;")
             if event.type() == QEvent.Leave:
                 self.ui.dragLbl1.setStyleSheet("background:transparent;")
+            event.accept()
+        if target == self.ui.dragLbl2:
+            if event.type() == QEvent.MouseButtonPress:
+                self.oldPos2 = self.ui.dragLbl2.x()
+                self.dragPosition = event.globalPos() - self.ui.dragLbl2.frameGeometry().topLeft()
+            if event.type() == QEvent.MouseMove:
+                self.ui.dragLbl2.move((event.globalPos() - self.dragPosition).x(), self.ui.dragLbl2.y())
+            if event.type() == QEvent.MouseButtonRelease:
+                offset = self.ui.dragLbl2.x() - self.oldPos2
+                self.ui.frame11.setGeometry(self.ui.frame11.x()+offset, self.ui.frame11.y(), self.ui.frame11.width()-offset, self.ui.frame11.height())
+                # self.ui.sStack.setGeometry(self.ui.sStack.x(), self.ui.sStack.y(), self.ui.sStack.width()-offset, self.ui.sStack.height())
+                self.ui.frame10.resize(self.ui.frame10.width()+offset, self.ui.frame10.height())
+                # self.moveBtn(self.ui.cdBtn, -offset)
+                # self.moveBtn(self.ui.qcBtn, -offset)
+                # self.moveBtn(self.ui.gdBtn, -offset)
+                # self.moveBtn(self.ui.czBtn, offset)
+            if event.type() == QEvent.Enter:
+                self.ui.dragLbl2.setStyleSheet("background:green;")
+            if event.type() == QEvent.Leave:
+                self.ui.dragLbl2.setStyleSheet("background:transparent;")
             event.accept()
         if target == self.ui.windowDragLbl and Pay:
             if event.type() == QEvent.MouseButtonPress:
