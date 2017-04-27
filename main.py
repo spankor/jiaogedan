@@ -433,10 +433,8 @@ class MainWindow(QMainWindow):
     def hyComboChanged(self, index):
         if index == 0:
             self.ui.zdjSpin.setDecimals(0)
-            self.ui.zdjSpin.setSingleStep(1)
         else:
             self.ui.zdjSpin.setDecimals(2)
-            self.ui.zdjSpin.setSingleStep(0.01)
         self.ui.zdjSpin.setValue(0)
         self.zdjSpinChanged(0)
     
