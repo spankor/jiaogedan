@@ -18,7 +18,7 @@ numgreen = "rgb(76,170,7)"
 numred = "rgb(255,0,0)"
 sizeIcon = ":/src/src/sizeSelected.png"
 
-Pay = True
+Pay = False
 NeedLogin = False
 
 class LoginDialog(QDialog):
@@ -37,7 +37,7 @@ class LoginDialog(QDialog):
         if self.ui.usernameEdt.text() == 'admin' and self.ui.passwordEdt.text() == 'corypi':
             self.flag = 1
             global Pay
-            Pay = True
+            Pay = False
             self.close()
             
     def closeEvent(self, e):
@@ -64,6 +64,10 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         if Pay:
             self.setStyleSheet("#Form{background:url(:/src/src/background1366.png)}")
+            self.ui.frame00.setStyleSheet("#frame00{background:url(:/src/src/border.png);border: 1px solid rgb(160,160,160); }")
+            self.ui.frame01.setStyleSheet("#frame01{background:url(:/src/src/border.png);border: 1px solid rgb(160,160,160); }")
+            self.ui.frame10.setStyleSheet("#frame10{background:url(:/src/src/border.png);border: 1px solid rgb(160,160,160); }")
+            self.ui.frame11.setStyleSheet("#frame11{background:url(:/src/src/border.png);border: 1px solid rgb(160,160,160); }")
         self.dragPosition = QPoint(0, 0)
         self.oldPos1 = 0
         self.mousePressedFlag = False
