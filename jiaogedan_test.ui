@@ -32,7 +32,7 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">#Form{background:url(:/src/src/background1920.png)}</string>
+   <string notr="true"/>
   </property>
   <widget class="QPushButton" name="closeBtn">
    <property name="geometry">
@@ -60,7 +60,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">#frame00{background:url(:/src/src/border.png);border: 1px solid rgb(160,160,160); }</string>
+    <string notr="true">#frame00{background:url(:/src/src/border.png);}</string>
    </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
@@ -496,6 +496,9 @@
     </property>
     <property name="maximum">
      <double>5000.000000000000000</double>
+    </property>
+    <property name="singleStep">
+     <double>1.000000000000000</double>
     </property>
    </widget>
    <widget class="QLabel" name="b2l">
@@ -1110,7 +1113,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">#frame01{background:url(:/src/src/border.png);border: 1px solid rgb(160,160,160); }</string>
+    <string notr="true"/>
    </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
@@ -1128,7 +1131,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true"/>
+     <string notr="true">#frame01{background:url(:/src/src/border.png);}</string>
     </property>
     <property name="currentIndex">
      <number>0</number>
@@ -1307,6 +1310,12 @@
       <height>23</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Agency FB</family>
+      <pointsize>9</pointsize>
+     </font>
+    </property>
     <property name="text">
      <string>报单流水</string>
     </property>
@@ -1322,6 +1331,12 @@
       <width>75</width>
       <height>23</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Agency FB</family>
+      <pointsize>9</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>预埋单</string>
@@ -1341,7 +1356,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">#frame10{background:url(:/src/src/border.png);border: 1px solid rgb(160,160,160); }</string>
+    <string notr="true">#frame10{background:url(:/src/src/border.png);}</string>
    </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>

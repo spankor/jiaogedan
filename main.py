@@ -18,7 +18,7 @@ numgreen = "rgb(76,170,7)"
 numred = "rgb(255,0,0)"
 sizeIcon = ":/src/src/sizeSelected.png"
 
-Pay = False
+Pay = True
 NeedLogin = False
 
 class LoginDialog(QDialog):
@@ -191,7 +191,7 @@ class MainWindow(QMainWindow):
     def build_connections(self):
         self.ui.ssLbl.installEventFilter(self)
         self.ui.zddLbl.installEventFilter(self)
-        self.ui.zdxLbl.installEventFilter(self)
+        # self.ui.zdxLbl.installEventFilter(self)
         self.ui.ssEdit.installEventFilter(self)
         self.ui.zddEdit.installEventFilter(self)
         self.ui.zdxEdit.installEventFilter(self)
@@ -433,8 +433,10 @@ class MainWindow(QMainWindow):
     def hyComboChanged(self, index):
         if index == 0:
             self.ui.zdjSpin.setDecimals(0)
+            self.ui.zdjSpin.setSingleStep(1)
         else:
             self.ui.zdjSpin.setDecimals(2)
+            self.ui.zdjSpin.setSingleStep(0.01)
         self.ui.zdjSpin.setValue(0)
         self.zdjSpinChanged(0)
     
@@ -522,8 +524,6 @@ class MainWindow(QMainWindow):
             self.ui.b3.setText(self.baoliu(0, value - 3))
             self.ui.b4.setText(self.baoliu(0, value - 4))
             self.ui.b5.setText(self.baoliu(0, value - 5))
-            self.ui.zddLbl.setText("<= %s"%self.baoliu(2, self.ui.zdjSpin.value()*1.08))
-            self.ui.zdxLbl.setText(">= %s"%self.baoliu(2, self.ui.zdjSpin.value()*0.92))
             for sb in self.sbls:
                 sb.setText(str(random.randint(1000, 9999)))  
         else:
@@ -538,8 +538,6 @@ class MainWindow(QMainWindow):
             self.ui.b4.setText(self.baoliu(2, value - 0.04))
             self.ui.b5.setText(self.baoliu(2, value - 0.05))
             if self.ui.hyCombo.currentIndex() in (1,2):
-                self.ui.zddLbl.setText("<= %s"%self.baoliu(2, self.ui.zdjSpin.value()*1.06))
-                self.ui.zdxLbl.setText(">= %s"%self.baoliu(2, self.ui.zdjSpin.value()*0.94))
                 for sb in self.sbls:
                     sb.setText(str(random.randint(10, 99)))
             else:
@@ -584,7 +582,18 @@ class MainWindow(QMainWindow):
         if n == 2:
             return "%.2f"%f
         return "%i"%f
-    
+
+    def changeZddZdx(self, value):
+        zdd = value
+        zdx = value
+        if self.ui.hyCombo.currentIndex() == 0:
+            zdd = value * 1.08
+            zdx = value * 0.92
+        elif self.ui.hyCombo.currentIndex() in (1, 2):
+            zdd = value * 1.06
+            zdx = value * 0.94
+        return (zdd, zdx)
+
     def eventFilter(self, target, event):
         if target == self.ui.dragLbl1 and Pay:
             if event.type() == QEvent.MouseButtonPress:
@@ -656,27 +665,29 @@ class MainWindow(QMainWindow):
                 if self.ui.zddEdit.text():
                     try:
                         v = float(self.ui.zddEdit.text())
-                        self.ui.zddLbl.setText("<= %.2f"%v)
+                        zdd, zdx = self.changeZddZdx(v)
+                        self.ui.zddLbl.setText("<= %s"%self.baoliu(2, zdd))
+                        self.ui.zdxLbl.setText("<= %s"%self.baoliu(2, zdx))
                     except:
                         pass
                     self.ui.zddEdit.clear()
                 self.ui.zddEdit.hide()
             event.accept()
-        if target == self.ui.zdxLbl:
-            if event.type() == QEvent.MouseButtonPress:
-                self.ui.zdxEdit.show()
-            event.accept()
-        if target == self.ui.zdxEdit:
-            if event.type() == QEvent.Leave:
-                if self.ui.zdxEdit.text():
-                    try:
-                        v = float(self.ui.zdxEdit.text())
-                        self.ui.zdxLbl.setText(">= %.2f"%v)
-                    except:
-                        pass
-                    self.ui.zdxEdit.clear()
-                self.ui.zdxEdit.hide()
-            event.accept()
+        # if target == self.ui.zdxLbl:
+        #     if event.type() == QEvent.MouseButtonPress:
+        #         self.ui.zdxEdit.show()
+        #     event.accept()
+        # if target == self.ui.zdxEdit:
+        #     if event.type() == QEvent.Leave:
+        #         if self.ui.zdxEdit.text():
+        #             try:
+        #                 v = float(self.ui.zdxEdit.text())
+        #                 self.ui.zdxLbl.setText(">= %.2f"%v)
+        #             except:
+        #                 pass
+        #             self.ui.zdxEdit.clear()
+        #         self.ui.zdxEdit.hide()
+        #     event.accept()
         return False
         
 if __name__ == "__main__":
