@@ -22,8 +22,14 @@ numred = "rgb(255,0,0)"
 sizeIcon = ":/src/src/sizeSelected.png"
 historyFile = "hist.db"
 
-Pay = True
-NeedLogin = False
+Debug = False
+
+Pay = False
+NeedLogin = True
+
+if Debug:
+    Pay = True
+    NeedLogin = False
 
 def ignore_exceptions(func):
     @wraps(func)
@@ -49,7 +55,7 @@ class LoginDialog(QDialog):
         if self.ui.usernameEdt.text() == 'admin' and self.ui.passwordEdt.text() == 'corypi':
             self.flag = 1
             global Pay
-            Pay = False
+            Pay = True
             self.close()
             
     def closeEvent(self, e):
@@ -164,6 +170,9 @@ class MainWindow(QMainWindow):
 #        self.ui.ccTbl.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.ui.ccTbl.verticalHeader().setVisible(False)
         self.ui.ccTbl.setShowGrid(False)
+        if not Debug:
+            self.ui.ccTbl.setColumnHidden(10, True)
+            self.ui.ccTbl.setColumnHidden(11, True)
         
         self.ui.kcTbl.setColumnCount(4)
         headers  =  ( "合约代码","当前库存", "可用库存", "交易冻结")  
@@ -232,6 +241,7 @@ class MainWindow(QMainWindow):
         sysCdMenu1.addAction(QAction("出入金明细", self))
         sysCdMenu2 = QMenu("历史查询", self)
         sysCdMenu3 = QMenu("风险查询", self)
+        sysCdMenu3.triggered.connect(self.lscjcx.show)
         sysMenu = QMenu(self)
         sysMenu.addAction(QAction("客户资金库存及持仓", self))
         sysMenu.addAction(QAction("交收行情", self))
@@ -557,7 +567,7 @@ class MainWindow(QMainWindow):
         currentRow = self.ui.bdTbl.currentRow()
         if currentRow < 0:
             return
-        countRow = self.ui.cjTbl.rowCount()
+        countRow = 0
         self.ui.cjTbl.insertRow(countRow)
         self.ui.cjTbl.setRowHeight(countRow, 21)
         self.ui.cjTbl.setItem(countRow, 0, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.bdTbl, currentRow, 0)))
@@ -567,6 +577,7 @@ class MainWindow(QMainWindow):
         self.ui.cjTbl.setItem(countRow, 4, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.bdTbl, currentRow, 7)))
         self.ui.cjTbl.setItem(countRow, 5, self.getTableItem(countRow, '0'+self.getrnd(7)))
         self.ui.cjTbl.setItem(countRow, 6, self.getTableItem(countRow, '17'+self.getrnd(14)))
+        self.updateStyleOfBdtbl(self.ui.cjTbl, 0)
         self.ui.bdTbl.removeRow(currentRow)
         self.updateStyleOfBdtbl(self.ui.bdTbl, currentRow)
 
@@ -606,21 +617,28 @@ class MainWindow(QMainWindow):
             if hy1 == hy and jylx1 == jylx:
                 amt = int(self.getItemTextFromTable(self.ui.cjTbl, row, 3))
                 jc += amt
-        countRow = self.ui.ccTbl.rowCount()
-        self.ui.ccTbl.insertRow(countRow)
-        self.ui.ccTbl.setRowHeight(countRow, 21)
-        self.ui.ccTbl.setItem(countRow, 0, self.getTableItem(countRow, hy))
-        self.ui.ccTbl.setItem(countRow, 1, self.getTableItem(countRow, ccfx))
-        self.ui.ccTbl.setItem(countRow, 2, self.getTableItem(countRow, '0'))
-        self.ui.ccTbl.setItem(countRow, 3, self.getTableItem(countRow, '0'))
-        self.ui.ccTbl.setItem(countRow, 4, self.getTableItem(countRow, '0'))
-        self.ui.ccTbl.setItem(countRow, 5, self.getTableItem(countRow, '0'))
-        self.ui.ccTbl.setItem(countRow, 6, self.getTableItem(countRow, '0'))
-        self.ui.ccTbl.setItem(countRow, 7, self.getTableItem(countRow, '0'))
-        self.ui.ccTbl.setItem(countRow, 8, self.getTableItem(countRow, '0'))
-        self.ui.ccTbl.setItem(countRow, 9, self.getTableItem(countRow, str(jc)))
-        self.ui.ccTbl.setItem(countRow, 10, self.getTableItem(countRow, cjjg))
-        self.ui.ccTbl.setItem(countRow, 11, self.getTableItem(countRow, cjsl))
+        ccRow = self.checkHyCcfxInTable(self.ui.ccTbl, hy, ccfx)
+        if ccRow == self.ui.ccTbl.rowCount():
+            countRow = 0
+            self.ui.ccTbl.insertRow(countRow)
+            self.ui.ccTbl.setRowHeight(countRow, 21)
+            self.ui.ccTbl.setItem(countRow, 0, self.getTableItem(countRow, hy))
+            self.ui.ccTbl.setItem(countRow, 1, self.getTableItem(countRow, ccfx))
+            self.ui.ccTbl.setItem(countRow, 2, self.getTableItem(countRow, '0'))
+            self.ui.ccTbl.setItem(countRow, 3, self.getTableItem(countRow, '0'))
+            self.ui.ccTbl.setItem(countRow, 4, self.getTableItem(countRow, '0'))
+            self.ui.ccTbl.setItem(countRow, 5, self.getTableItem(countRow, '0'))
+            self.ui.ccTbl.setItem(countRow, 6, self.getTableItem(countRow, '0'))
+            self.ui.ccTbl.setItem(countRow, 7, self.getTableItem(countRow, '0'))
+            self.ui.ccTbl.setItem(countRow, 8, self.getTableItem(countRow, '0'))
+            self.ui.ccTbl.setItem(countRow, 9, self.getTableItem(countRow, str(jc)))
+            self.ui.ccTbl.setItem(countRow, 10, self.getTableItem(countRow, cjjg))
+            self.ui.ccTbl.setItem(countRow, 11, self.getTableItem(countRow, cjsl))
+            self.updateStyleOfBdtbl(self.ui.ccTbl, 0)
+        else:
+            self.ui.ccTbl.item(ccRow, 10).setText(cjjg)
+            self.ui.ccTbl.item(ccRow, 11).setText(cjsl)
+            self.ui.ccTbl.item(ccRow, 9).setText(str(jc))
 
     def recordHistory(self):
         if not os.path.exists(historyFile):
@@ -638,6 +656,12 @@ class MainWindow(QMainWindow):
     def checkHyInTable(self, table, hy):
         for row in range(table.rowCount()):
             if self.getItemTextFromTable(table, row, 0) == hy:
+                return row
+        return table.rowCount()
+
+    def checkHyCcfxInTable(self, table, hy, ccfx):
+        for row in range(table.rowCount()):
+            if self.getItemTextFromTable(table, row, 0) == hy and self.getItemTextFromTable(table, row, 1) == ccfx:
                 return row
         return table.rowCount()
 
