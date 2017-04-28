@@ -176,6 +176,9 @@ class MainWindow(QMainWindow):
         self.cjMenuDeleteAction = QAction("删除", self)
         self.cjMenuDeleteAction.triggered.connect(self.cjTblDeleteARow)
         self.cjMenu.addAction(self.cjMenuDeleteAction)
+        self.cjMenuKcAction = QAction("累计到库存/记录数据/清空成交流水", self)
+        self.cjMenuKcAction.triggered.connect(self.cjTblKcAndRecord)
+        self.cjMenu.addAction(self.cjMenuKcAction)
         self.ui.cjTbl.customContextMenuRequested.connect(self.openCjTblMenu)
         
         buttons = [self.ui.s1,self.ui.s2,self.ui.s3,self.ui.s4,self.ui.s5,self.ui.b1,self.ui.b2,self.ui.b3,self.ui.b4,self.ui.b5]
@@ -519,7 +522,7 @@ class MainWindow(QMainWindow):
         self.ui.bdTbl.removeRow(currentRow)
         self.updateStyleOfBdtbl(self.ui.bdTbl, currentRow)
 
-    def gdBtnClicked(self):
+    def cjTblKcAndRecord(self):
         self.recordHistory()
         for row in range(self.ui.cjTbl.rowCount()):
             hy = self.getItemTextFromTable(self.ui.cjTbl, row, 0)
@@ -536,6 +539,12 @@ class MainWindow(QMainWindow):
                 currentKc = int(self.getItemTextFromTable(self.ui.kcTbl, kcRow, 1))
                 self.ui.kcTbl.item(kcRow, 1).setText(str(amt+currentKc))
                 self.ui.kcTbl.item(kcRow, 2).setText(str(amt+currentKc))
+        while(self.ui.cjTbl.rowCount()):
+            self.ui.cjTbl.removeRow(0)
+
+    def gdBtnClicked(self):
+        for row in range(self.ui.cjTbl.rowCount()):
+            hy = self.getItemTextFromTable(self.ui.cjTbl, row, 0)
             ccfx = self.getItemTextFromTable(self.ui.cjTbl, row, 1)[3]
             ccRow = self.checkHyCcfxInTable(self.ui.ccTbl, hy, ccfx)
             if ccRow == self.ui.ccTbl.rowCount():
@@ -556,8 +565,6 @@ class MainWindow(QMainWindow):
                 amt = int(self.getItemTextFromTable(self.ui.cjTbl, row, 3))
                 jc = int(self.getItemTextFromTable(self.ui.ccTbl, ccRow, 9))
                 self.ui.ccTbl.item(ccRow, 9).setText(str(amt+jc))
-        while(self.ui.cjTbl.rowCount()):
-            self.ui.cjTbl.removeRow(0)
 
     def recordHistory(self):
         if not os.path.exists(historyFile):
