@@ -5,6 +5,7 @@ from PyQt5.QtGui import *
 from jiaogedan import *
 import login_ui
 import sys
+import os
 import random
 
 styleTypes = ('yq', 'js', 'zlc')
@@ -17,6 +18,7 @@ buyred = "rgb(255,0,0)"
 numgreen = "rgb(76,170,7)"
 numred = "rgb(255,0,0)"
 sizeIcon = ":/src/src/sizeSelected.png"
+historyFile = "hist.db"
 
 Pay = True
 NeedLogin = False
@@ -487,18 +489,44 @@ class MainWindow(QMainWindow):
         self.updateStyleOfBdtbl(self.ui.bdTbl, currentRow)
 
     def gdBtnClicked(self):
-        currentRow = self.ui.cjTbl.currentRow()
-        if currentRow < 0:
-            return
-        countRow = self.ui.kcTbl.rowCount()
-        self.ui.kcTbl.insertRow(countRow)
-        self.ui.kcTbl.setRowHeight(countRow, 21)
-        self.ui.kcTbl.setItem(countRow, 0, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.cjTbl, currentRow, 0)))
-        self.ui.kcTbl.setItem(countRow, 1, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.cjTbl, currentRow, 3)))
-        self.ui.kcTbl.setItem(countRow, 2, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.cjTbl, currentRow, 3)))
-        self.ui.kcTbl.setItem(countRow, 3, self.getTableItem(countRow, '0'))
-        self.ui.cjTbl.removeRow(currentRow)
-        self.updateStyleOfBdtbl(self.ui.cjTbl, currentRow)
+        self.recordHistory()
+        for row in range(self.ui.cjTbl.rowCount()):
+            hy = self.getItemTextFromTable(self.ui.cjTbl, row, 0)
+            kcRow = self.checkHyInTable(self.ui.kcTbl, hy)
+            if kcRow == self.ui.kcTbl.rowCount():
+                self.ui.kcTbl.insertRow(kcRow)
+                self.ui.kcTbl.setRowHeight(kcRow, 21)
+                self.ui.kcTbl.setItem(kcRow, 0, self.getTableItem(kcRow, self.getItemTextFromTable(self.ui.cjTbl, row, 0)))
+                self.ui.kcTbl.setItem(kcRow, 1, self.getTableItem(kcRow, self.getItemTextFromTable(self.ui.cjTbl, row, 3)))
+                self.ui.kcTbl.setItem(kcRow, 2, self.getTableItem(kcRow, self.getItemTextFromTable(self.ui.cjTbl, row, 3)))
+                self.ui.kcTbl.setItem(kcRow, 3, self.getTableItem(kcRow, '0'))
+            else:
+                amt = int(self.getItemTextFromTable(self.ui.cjTbl, row, 3))
+                currentKc = int(self.getItemTextFromTable(self.ui.kcTbl, kcRow, 1))
+                self.ui.kcTbl.item(kcRow, 1).setText(str(amt+currentKc))
+                self.ui.kcTbl.item(kcRow, 2).setText(str(amt+currentKc))
+            
+        # while(self.ui.cjTbl.rowCount()):
+        #     self.ui.cjTbl.removeRow(0)
+
+    def recordHistory(self):
+        if not os.path.exists(historyFile):
+            f = open(historyFile, "w")
+            f.close()
+        for row in range(self.ui.cjTbl.rowCount()):
+            l = []
+            for cnt in  range(self.ui.cjTbl.columnCount()):
+                l.append(self.getItemTextFromTable(self.ui.cjTbl, row, cnt))
+            txt = ",".join(l)
+            f = open(historyFile, 'a')
+            f.write(txt+'\n')
+            f.close()
+
+    def checkHyInTable(self, table, hy):
+        for row in range(table.rowCount()):
+            if self.getItemTextFromTable(table, row, 0) == hy:
+                return row
+        return table.rowCount()
 
     def updateStyleOfBdtbl(self, table, currentRow):
         for row in range(currentRow, table.rowCount()):
@@ -585,8 +613,8 @@ class MainWindow(QMainWindow):
         zdd = value
         zdx = value
         if self.ui.hyCombo.currentIndex() == 0:
-            zdd = value * 1.08
-            zdx = value * 0.92
+            zdd = int(value * 1.08)
+            zdx = int(value * 0.92)
         elif self.ui.hyCombo.currentIndex() in (1, 2):
             zdd = value * 1.06
             zdx = value * 0.94
