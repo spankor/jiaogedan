@@ -323,32 +323,35 @@ class MainWindow(QMainWindow):
         return nt
         
     def pcBtn2Clicked(self):
-        currentRow = self.ui.ccTbl.currentRow()
-        if currentRow < 0:
-            return
-        zc7 = int(self.clean_commo_from_text(self.ui.ccTbl.item(currentRow, 8).text()))
-        ccjj8 = float(self.clean_commo_from_text(self.ui.ccTbl.item(currentRow, 4).text()))
-        cjjg6 = float(self.clean_commo_from_text(self.ui.ccTbl.item(currentRow, 10).text()))
-        cjsl2 = int(self.ui.ccTbl.item(currentRow, 11).text())
-        kcjj9 = (zc7 * ccjj8 + cjjg6 * cjsl2) / (zc7 + cjsl2)
-        jc4 = int(self.ui.ccTbl.item(currentRow, 9).text())
-        zcc10 = cjsl2 + zc7 + jc4
-        zybzj11 = 0
-        ccyk12 = 0
-        zdj14 = self.ui.zdjSpin.value()
-        if self.ui.hyCombo.currentIndex() == 0:
-            ccyk12 = zcc10 * (ccjj8 - zdj14) * 1
-            zybzj11 = kcjj9* zcc10 * 0.13
-        if self.ui.hyCombo.currentIndex() == 1:
-            ccyk12 = zcc10 * (ccjj8 - zdj14) * 1000
-            zybzj11 = kcjj9* zcc10  * 110
-        if self.ui.hyCombo.currentIndex() == 2:
-            ccyk12 = zcc10 * (ccjj8 - zdj14) * 100
-            zybzj11 = kcjj9* zcc10 * 11
-        self.ui.ccTbl.item(currentRow, 7).setText(str(zcc10))  
-        self.ui.ccTbl.item(currentRow, 3).setText(self.baoliu(2, kcjj9))
-        self.ui.ccTbl.item(currentRow, 6).setText(self.baoliu(2, zybzj11))
-        self.ui.ccTbl.item(currentRow, 5).setText(self.baoliu(2, ccyk12))
+        try:
+            currentRow = self.ui.ccTbl.currentRow()
+            if currentRow < 0:
+                return
+            zc7 = int(self.clean_commo_from_text(self.ui.ccTbl.item(currentRow, 8).text()))
+            ccjj8 = float(self.clean_commo_from_text(self.ui.ccTbl.item(currentRow, 4).text()))
+            cjjg6 = float(self.clean_commo_from_text(self.ui.ccTbl.item(currentRow, 10).text()))
+            cjsl2 = int(self.ui.ccTbl.item(currentRow, 11).text())
+            kcjj9 = (zc7 * ccjj8 + cjjg6 * cjsl2) / (zc7 + cjsl2)
+            jc4 = int(self.ui.ccTbl.item(currentRow, 9).text())
+            zcc10 = cjsl2 + zc7 + jc4
+            zybzj11 = 0
+            ccyk12 = 0
+            zdj14 = self.ui.zdjSpin.value()
+            if self.ui.hyCombo.currentIndex() == 0:
+                ccyk12 = zcc10 * (ccjj8 - zdj14) * 1
+                zybzj11 = kcjj9* zcc10 * 0.13
+            if self.ui.hyCombo.currentIndex() == 1:
+                ccyk12 = zcc10 * (ccjj8 - zdj14) * 1000
+                zybzj11 = kcjj9* zcc10  * 110
+            if self.ui.hyCombo.currentIndex() == 2:
+                ccyk12 = zcc10 * (ccjj8 - zdj14) * 100
+                zybzj11 = kcjj9* zcc10 * 11
+            self.ui.ccTbl.item(currentRow, 7).setText(str(zcc10))  
+            self.ui.ccTbl.item(currentRow, 3).setText(self.baoliu(2, kcjj9))
+            self.ui.ccTbl.item(currentRow, 6).setText(self.baoliu(2, zybzj11))
+            self.ui.ccTbl.item(currentRow, 5).setText(self.baoliu(2, ccyk12))
+        except Exception as e:
+            print(e)
 
     def fxdBtnClicked(self):
         try:
