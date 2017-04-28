@@ -1508,10 +1508,38 @@
       <attribute name="horizontalHeaderDefaultSectionSize">
        <number>90</number>
       </attribute>
+      <attribute name="verticalHeaderVisible">
+       <bool>false</bool>
+      </attribute>
+      <row>
+       <property name="text">
+        <string>新建行</string>
+       </property>
+      </row>
       <column/>
       <column/>
       <column/>
       <column/>
+      <item row="0" column="0">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </item>
+      <item row="0" column="1">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </item>
+      <item row="0" column="2">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </item>
+      <item row="0" column="3">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </item>
      </widget>
     </widget>
    </widget>

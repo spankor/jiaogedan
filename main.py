@@ -8,6 +8,7 @@ import login_ui
 import sys
 import os
 import random
+from functools import wraps
 
 styleTypes = ('yq', 'js', 'zlc')
 maiTypes = ('buy', 'sell')
@@ -23,6 +24,14 @@ historyFile = "hist.db"
 
 Pay = True
 NeedLogin = False
+
+def ignore_exceptions(func):
+    @wraps(func)
+    def _call(*args, **kwargs):
+        try:
+            result = func(*args, **kwargs)
+        except Exception as e:
+            print(e)
 
 class LoginDialog(QDialog):
     loginState = pyqtSignal(int)
@@ -164,7 +173,8 @@ class MainWindow(QMainWindow):
         self.ui.zjTbl.setColumnCount(4)
         headers  =  ( "当前余额", "可用金额", "交易冻结资金", "浮动盈亏")  
         self.ui.zjTbl.setHorizontalHeaderLabels(headers)
-        self.ui.zjTbl.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.ui.zjTbl.setShowGrid(False)
+        self.ui.zjTbl.setRowHeight(0, 21)
         
     #成交单
         self.ui.cjTbl.setColumnCount(7)
@@ -280,6 +290,7 @@ class MainWindow(QMainWindow):
         # self.ui.kdcBtn.clicked.connect(self.kdcBtnClicked)
         self.ui.pcBtn2.clicked.connect(self.pcBtn2Clicked)
         self.ui.fsBtn.clicked.connect(self.fsBtnClicked)
+        self.ui.fxdBtn.clicked.connect(self.fxdBtnClicked)
 
     def showOrNot(self, flag):
         if flag == 0:
@@ -339,6 +350,25 @@ class MainWindow(QMainWindow):
         self.ui.ccTbl.item(currentRow, 6).setText(self.baoliu(2, zybzj11))
         self.ui.ccTbl.item(currentRow, 5).setText(self.baoliu(2, ccyk12))
 
+    def fxdBtnClicked(self):
+        try:
+            kyje2 = float(self.clean_commo_from_text(self.ui.zjTbl.item(0, 1).text()))
+            jydj3 = 0
+            fdyk4 = 0
+            for row in range(self.ui.ccTbl.rowCount()):
+                zybzj11 = float(self.clean_commo_from_text(self.ui.ccTbl.item(row, 6).text()))
+                ccyk12 = float(self.clean_commo_from_text(self.ui.ccTbl.item(row, 5).text()))
+                jydj3 += zybzj11
+                fdyk4 += ccyk12
+            dqye1 = kyje2 + jydj3 + fdyk4
+            fxd5 = int(jydj3 / dqye1 * 100)
+            self.ui.zjTbl.setItem(0, 0, self.getTableItem(0, self.baoliu(2, dqye1)))
+            self.ui.zjTbl.setItem(0, 1, self.getTableItem(0, self.baoliu(2, kyje2)))
+            self.ui.zjTbl.setItem(0, 2, self.getTableItem(0, self.baoliu(2, jydj3)))
+            self.ui.zjTbl.setItem(0, 3, self.getTableItem(0, self.baoliu(2, fdyk4)))
+            self.ui.fxdBtn.setText(str(fxd5)+"%")
+        except Exception as e:
+            print(e)
         
     def fsBtnClicked(self):
         currentRow = self.ui.ccTbl.currentRow()
