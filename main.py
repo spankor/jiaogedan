@@ -52,6 +52,47 @@ class LishiChengjiaoChaxun(QDialog):
         super(LishiChengjiaoChaxun, self).__init__(parent)
         self.ui = lscjcx.Ui_lscjcx()
         self.ui.setupUi(self)
+        self.setWindowFlags(self.windowFlags()& ~Qt.WindowMaximizeButtonHint& ~Qt.WindowMinimizeButtonHint)
+        self.ui.cjTbl.setShowGrid(False)
+        self.cjMenu = QMenu()
+        self.cjMenuAddAction = QAction("添加行", self)
+        self.cjMenuAddAction.triggered.connect(self.cjTblAddARow)
+        self.cjMenuDeleteAction = QAction("删除行", self)
+        self.cjMenuDeleteAction.triggered.connect(self.cjTblDeleteARow)
+        self.cjMenu.addAction(self.cjMenuAddAction)
+        self.cjMenu.addAction(self.cjMenuDeleteAction)
+        self.ui.cjTbl.customContextMenuRequested.connect(self.openCjTblMenu)
+
+    def cjTblDeleteARow(self):
+        currentRow = self.ui.cjTbl.currentRow()
+        if currentRow < 0:
+            return
+        self.ui.cjTbl.removeRow(currentRow)
+        self.updateStyleOfBdtbl(self.ui.cjTbl, currentRow)
+    
+    def cjTblAddARow(self):
+        countRow = self.ui.cjTbl.rowCount()
+        self.ui.cjTbl.insertRow(countRow)
+        self.ui.cjTbl.setRowHeight(countRow, 21)
+        for cln in range(self.ui.cjTbl.columnCount()):
+            self.ui.cjTbl.setItem(countRow, cln, self.getTableItem(countRow, ""))
+    
+    def openCjTblMenu(self, pos):
+        pos += self.ui.cjTbl.pos()
+        self.cjMenu.exec_(self.mapToGlobal(pos))
+
+    def updateStyleOfBdtbl(self, table, currentRow):
+        for row in range(currentRow, table.rowCount()):
+            for col in range(table.columnCount()):
+                table.setItem(row, col, self.getTableItem(row, self.getItemTextFromTable(table, row, col)))
+
+    def getTableItem(self, rowCount, txt):
+        item = QTableWidgetItem(txt)
+        if rowCount % 2 == 0:
+            item.setBackground(QBrush(QPixmap(":/src/src/tbl_yellow.png")))
+        else:
+            item.setBackground(QBrush(QPixmap(":/src/src/tbl_white.png")))
+        return item
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):

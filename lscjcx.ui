@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>lscjcx</class>
  <widget class="QWidget" name="lscjcx">
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -13,10 +16,13 @@
   <property name="windowTitle">
    <string>历史成交查询</string>
   </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
+  </property>
   <property name="styleSheet">
    <string notr="true">#lscjcx{background:url(:/src/src/lscx_background.png)}</string>
   </property>
-  <widget class="QTableWidget" name="tableWidget">
+  <widget class="QTableWidget" name="cjTbl">
    <property name="geometry">
     <rect>
      <x>12</x>
@@ -24,6 +30,9 @@
      <width>963</width>
      <height>239</height>
     </rect>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::CustomContextMenu</enum>
    </property>
    <property name="frameShape">
     <enum>QFrame::NoFrame</enum>
