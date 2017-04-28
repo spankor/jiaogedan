@@ -56,12 +56,13 @@ class LoginDialog(QDialog):
         self.loginState.emit(self.flag)
         e.accept()
 
-class LishiChengjiaoChaxun(QDialog):
+class LishiChengjiaoChaxun(QWidget):
     def __init__(self, parent=None):
         super(LishiChengjiaoChaxun, self).__init__(parent)
         self.ui = lscjcx.Ui_lscjcx()
         self.ui.setupUi(self)
         self.setWindowFlags(self.windowFlags()& ~Qt.WindowMaximizeButtonHint& ~Qt.WindowMinimizeButtonHint)
+        self.setWindowIcon(QIcon())
         self.ui.cjTbl.setShowGrid(False)
         self.cjMenu = QMenu()
         self.cjMenuAddAction = QAction("添加行", self)
@@ -225,7 +226,7 @@ class MainWindow(QMainWindow):
         sysCdMenu1 = QMenu("当日查询", self)
         sysCdMenu1.addAction(QAction("委托/申报", self))
         self.lscjcxAction = QAction("成交查询", self)
-        # self.lscjcxAction.triggered.connect(self.lscjcx.exec)
+        self.lscjcxAction.triggered.connect(self.lscjcx.show)
         sysCdMenu1.addAction(self.lscjcxAction)
         sysCdMenu1.addAction(QAction("延期持仓明细", self))
         sysCdMenu1.addAction(QAction("出入金明细", self))

@@ -17,216 +17,235 @@
    <string>历史成交查询</string>
   </property>
   <property name="autoFillBackground">
-   <bool>false</bool>
+   <bool>true</bool>
   </property>
   <property name="styleSheet">
-   <string notr="true">#lscjcx{background:url(:/src/src/lscx_background.png)}</string>
+   <string notr="true"/>
   </property>
-  <widget class="QTableWidget" name="cjTbl">
+  <widget class="QFrame" name="frame">
    <property name="geometry">
     <rect>
-     <x>12</x>
-     <y>87</y>
-     <width>963</width>
-     <height>239</height>
+     <x>-1</x>
+     <y>-1</y>
+     <width>1323</width>
+     <height>373</height>
     </rect>
    </property>
-   <property name="contextMenuPolicy">
-    <enum>Qt::CustomContextMenu</enum>
+   <property name="styleSheet">
+    <string notr="true">#frame{background:url(:/src/src/lscx_background.png)}</string>
    </property>
    <property name="frameShape">
-    <enum>QFrame::NoFrame</enum>
+    <enum>QFrame::StyledPanel</enum>
    </property>
    <property name="frameShadow">
     <enum>QFrame::Plain</enum>
    </property>
-   <property name="gridStyle">
-    <enum>Qt::NoPen</enum>
-   </property>
-   <property name="rowCount">
-    <number>0</number>
-   </property>
-   <property name="columnCount">
-    <number>12</number>
-   </property>
-   <attribute name="horizontalHeaderDefaultSectionSize">
-    <number>80</number>
-   </attribute>
-   <attribute name="verticalHeaderVisible">
-    <bool>false</bool>
-   </attribute>
-   <attribute name="verticalHeaderDefaultSectionSize">
-    <number>21</number>
-   </attribute>
-   <attribute name="verticalHeaderHighlightSections">
-    <bool>false</bool>
-   </attribute>
-   <column>
-    <property name="text">
-     <string>成交日期</string>
+   <widget class="QComboBox" name="comboBox">
+    <property name="geometry">
+     <rect>
+      <x>83</x>
+      <y>16</y>
+      <width>135</width>
+      <height>24</height>
+     </rect>
     </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>成交时间</string>
+    <property name="font">
+     <font>
+      <family>Small Fonts</family>
+      <pointsize>8</pointsize>
+     </font>
     </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>成交流水</string>
+    <item>
+     <property name="text">
+      <string>Ag(T+D)</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Au(T+D)</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>mAu(T+D)</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Au99.99</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Au100g</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Au99.95</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Pt99.95</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_2">
+    <property name="geometry">
+     <rect>
+      <x>315</x>
+      <y>46</y>
+      <width>135</width>
+      <height>24</height>
+     </rect>
     </property>
-   </column>
-   <column>
     <property name="text">
-     <string>报单号</string>
+     <string/>
     </property>
-   </column>
-   <column>
+   </widget>
+   <widget class="QTableWidget" name="cjTbl">
+    <property name="geometry">
+     <rect>
+      <x>13</x>
+      <y>88</y>
+      <width>963</width>
+      <height>239</height>
+     </rect>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::CustomContextMenu</enum>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Plain</enum>
+    </property>
+    <property name="gridStyle">
+     <enum>Qt::NoPen</enum>
+    </property>
+    <property name="rowCount">
+     <number>0</number>
+    </property>
+    <property name="columnCount">
+     <number>12</number>
+    </property>
+    <attribute name="horizontalHeaderDefaultSectionSize">
+     <number>80</number>
+    </attribute>
+    <attribute name="verticalHeaderVisible">
+     <bool>false</bool>
+    </attribute>
+    <attribute name="verticalHeaderDefaultSectionSize">
+     <number>21</number>
+    </attribute>
+    <attribute name="verticalHeaderHighlightSections">
+     <bool>false</bool>
+    </attribute>
+    <column>
+     <property name="text">
+      <string>成交日期</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>成交时间</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>成交流水</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>报单号</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>交易市场</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>合约代码</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>交易类型</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>成交价格</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>成交数量</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>买卖方向</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>成交金额</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>保证金</string>
+     </property>
+    </column>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit">
+    <property name="geometry">
+     <rect>
+      <x>83</x>
+      <y>46</y>
+      <width>135</width>
+      <height>24</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>415</x>
+      <y>49</y>
+      <width>30</width>
+      <height>19</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-image:url(:/src/src/rl.png)</string>
+    </property>
     <property name="text">
-     <string>交易市场</string>
+     <string/>
     </property>
-   </column>
-   <column>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>183</x>
+      <y>49</y>
+      <width>30</width>
+      <height>19</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-image:url(:/src/src/rl.png)</string>
+    </property>
     <property name="text">
-     <string>合约代码</string>
+     <string/>
     </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>交易类型</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>成交价格</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>成交数量</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>买卖方向</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>成交金额</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>保证金</string>
-    </property>
-   </column>
-  </widget>
-  <widget class="QComboBox" name="comboBox">
-   <property name="geometry">
-    <rect>
-     <x>82</x>
-     <y>15</y>
-     <width>135</width>
-     <height>24</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Small Fonts</family>
-     <pointsize>8</pointsize>
-    </font>
-   </property>
-   <item>
-    <property name="text">
-     <string>Ag(T+D)</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Au(T+D)</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>mAu(T+D)</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Au99.99</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Au100g</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Au99.95</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Pt99.95</string>
-    </property>
-   </item>
-  </widget>
-  <widget class="QLineEdit" name="lineEdit">
-   <property name="geometry">
-    <rect>
-     <x>82</x>
-     <y>45</y>
-     <width>135</width>
-     <height>24</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="lineEdit_2">
-   <property name="geometry">
-    <rect>
-     <x>314</x>
-     <y>45</y>
-     <width>135</width>
-     <height>24</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>414</x>
-     <y>48</y>
-     <width>30</width>
-     <height>19</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">border-image:url(:/src/src/rl.png)</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_2">
-   <property name="geometry">
-    <rect>
-     <x>182</x>
-     <y>48</y>
-     <width>30</width>
-     <height>19</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">border-image:url(:/src/src/rl.png)</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
+   </widget>
   </widget>
  </widget>
  <resources>
