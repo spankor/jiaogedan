@@ -94,6 +94,9 @@ class LishiChengjiaoChaxun(QDialog):
             item.setBackground(QBrush(QPixmap(":/src/src/tbl_white.png")))
         return item
 
+    def getItemTextFromTable(self, table, row, column):
+        return table.item(row, column).text()
+
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -143,7 +146,7 @@ class MainWindow(QMainWindow):
         self.ui.ymdTbl.setHorizontalHeaderLabels(headers)
         self.ui.ymdTbl.setEditTriggers(QAbstractItemView.NoEditTriggers)
         
-        self.ui.ccTbl.setColumnCount(10)
+        self.ui.ccTbl.setColumnCount(12)
         headers  =  ( "合约代码", "持仓方向", "可用仓",
                 "开仓均价", "持仓均价", "持仓盈亏", "占用保证金",
                 "总持仓", "昨仓", "今仓")  
@@ -312,21 +315,30 @@ class MainWindow(QMainWindow):
         currentRow = self.ui.ccTbl.currentRow()
         if currentRow < 0:
             return
-        kyc = float(self.clean_commo_from_text(self.ui.ccTbl.item(currentRow, 2).text()))
-        ccjj = float(self.clean_commo_from_text(self.ui.ccTbl.item(currentRow, 4).text()))
-        kcjj = float(self.clean_commo_from_text(self.ui.ccTbl.item(currentRow, 3).text()))
+        zc7 = int(self.clean_commo_from_text(self.ui.ccTbl.item(currentRow, 8).text()))
+        ccjj8 = float(self.clean_commo_from_text(self.ui.ccTbl.item(currentRow, 4).text()))
+        cjjg6 = float(self.clean_commo_from_text(self.ui.ccTbl.item(currentRow, 10).text()))
+        cjsl2 = int(self.ui.ccTbl.item(currentRow, 11).text())
+        kcjj9 = (zc7 * ccjj8 + cjjg6 * cjsl2) / (zc7 + cjsl2)
+        jc4 = int(self.ui.ccTbl.item(currentRow, 9).text())
+        zcc10 = cjsl2 + zc7 + jc4
+        zybzj11 = 0
+        ccyk12 = 0
+        zdj14 = self.ui.zdjSpin.value()
         if self.ui.hyCombo.currentIndex() == 0:
-            ccyk = kyc * (self.ui.zdjSpin.value() - ccjj) * 1
-            zybzj = kcjj * 0.13
+            ccyk12 = zcc10 * (ccjj8 - zdj14) * 1
+            zybzj11 = kcjj9* zcc10 * 0.13
         if self.ui.hyCombo.currentIndex() == 1:
-            ccyk = kyc * (self.ui.zdjSpin.value() - ccjj) * 1000
-            zybzj = kcjj * 1100
+            ccyk12 = zcc10 * (ccjj8 - zdj14) * 1000
+            zybzj11 = kcjj9* zcc10  * 110
         if self.ui.hyCombo.currentIndex() == 2:
-            ccyk = kyc * (self.ui.zdjSpin.value() - ccjj) * 100
-            zybzj = kcjj * 11
-        self.ui.ccTbl.item(currentRow, 5).setText(self.baoliu(2, ccyk))
-        self.ui.ccTbl.item(currentRow, 6).setText(self.baoliu(2, zybzj))
-        self.ui.ccTbl.item(currentRow, 7).setText(str(int(kyc)))
+            ccyk12 = zcc10 * (ccjj8 - zdj14) * 100
+            zybzj11 = kcjj9* zcc10 * 11
+        self.ui.ccTbl.item(currentRow, 7).setText(str(zcc10))  
+        self.ui.ccTbl.item(currentRow, 3).setText(self.baoliu(2, kcjj9))
+        self.ui.ccTbl.item(currentRow, 6).setText(self.baoliu(2, zybzj11))
+        self.ui.ccTbl.item(currentRow, 5).setText(self.baoliu(2, ccyk12))
+
         
     def fsBtnClicked(self):
         currentRow = self.ui.ccTbl.currentRow()
@@ -543,28 +555,36 @@ class MainWindow(QMainWindow):
             self.ui.cjTbl.removeRow(0)
 
     def gdBtnClicked(self):
+        currentRow = self.ui.cjTbl.currentRow()
+        if currentRow < 0:
+            return
+        hy = self.getItemTextFromTable(self.ui.cjTbl, currentRow, 0)
+        jylx = self.getItemTextFromTable(self.ui.cjTbl, currentRow, 1)
+        cjsl = self.getItemTextFromTable(self.ui.cjTbl, currentRow, 3)
+        cjjg = self.getItemTextFromTable(self.ui.cjTbl, currentRow, 2)
+        ccfx = jylx[3]
+        jc = 0
         for row in range(self.ui.cjTbl.rowCount()):
-            hy = self.getItemTextFromTable(self.ui.cjTbl, row, 0)
-            ccfx = self.getItemTextFromTable(self.ui.cjTbl, row, 1)[3]
-            ccRow = self.checkHyCcfxInTable(self.ui.ccTbl, hy, ccfx)
-            if ccRow == self.ui.ccTbl.rowCount():
-                countRow = self.ui.ccTbl.rowCount()
-                self.ui.ccTbl.insertRow(countRow)
-                self.ui.ccTbl.setRowHeight(countRow, 21)
-                self.ui.ccTbl.setItem(countRow, 0, self.getTableItem(countRow, hy))
-                self.ui.ccTbl.setItem(countRow, 1, self.getTableItem(countRow, ccfx))
-                self.ui.ccTbl.setItem(countRow, 2, self.getTableItem(countRow, '0'))
-                self.ui.ccTbl.setItem(countRow, 3, self.getTableItem(countRow, "0"))
-                self.ui.ccTbl.setItem(countRow, 4, self.getTableItem(countRow, "0"))
-                self.ui.ccTbl.setItem(countRow, 5, self.getTableItem(countRow, '0'))
-                self.ui.ccTbl.setItem(countRow, 6, self.getTableItem(countRow, '0'))
-                self.ui.ccTbl.setItem(countRow, 7, self.getTableItem(countRow, '0'))
-                self.ui.ccTbl.setItem(countRow, 8, self.getTableItem(countRow, '0'))
-                self.ui.ccTbl.setItem(countRow, 9, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.cjTbl, row, 3)))
-            else:
+            hy1 = self.getItemTextFromTable(self.ui.cjTbl, row, 0)
+            jylx1 = self.getItemTextFromTable(self.ui.cjTbl, row, 1)
+            if hy1 == hy and jylx1 == jylx:
                 amt = int(self.getItemTextFromTable(self.ui.cjTbl, row, 3))
-                jc = int(self.getItemTextFromTable(self.ui.ccTbl, ccRow, 9))
-                self.ui.ccTbl.item(ccRow, 9).setText(str(amt+jc))
+                jc += amt
+        countRow = self.ui.ccTbl.rowCount()
+        self.ui.ccTbl.insertRow(countRow)
+        self.ui.ccTbl.setRowHeight(countRow, 21)
+        self.ui.ccTbl.setItem(countRow, 0, self.getTableItem(countRow, hy))
+        self.ui.ccTbl.setItem(countRow, 1, self.getTableItem(countRow, ccfx))
+        self.ui.ccTbl.setItem(countRow, 2, self.getTableItem(countRow, '0'))
+        self.ui.ccTbl.setItem(countRow, 3, self.getTableItem(countRow, '0'))
+        self.ui.ccTbl.setItem(countRow, 4, self.getTableItem(countRow, '0'))
+        self.ui.ccTbl.setItem(countRow, 5, self.getTableItem(countRow, '0'))
+        self.ui.ccTbl.setItem(countRow, 6, self.getTableItem(countRow, '0'))
+        self.ui.ccTbl.setItem(countRow, 7, self.getTableItem(countRow, '0'))
+        self.ui.ccTbl.setItem(countRow, 8, self.getTableItem(countRow, '0'))
+        self.ui.ccTbl.setItem(countRow, 9, self.getTableItem(countRow, str(jc)))
+        self.ui.ccTbl.setItem(countRow, 10, self.getTableItem(countRow, cjjg))
+        self.ui.ccTbl.setItem(countRow, 11, self.getTableItem(countRow, cjsl))
 
     def recordHistory(self):
         if not os.path.exists(historyFile):
@@ -582,12 +602,6 @@ class MainWindow(QMainWindow):
     def checkHyInTable(self, table, hy):
         for row in range(table.rowCount()):
             if self.getItemTextFromTable(table, row, 0) == hy:
-                return row
-        return table.rowCount()
-
-    def checkHyCcfxInTable(self, table, hy, ccfx):
-        for row in range(table.rowCount()):
-            if self.getItemTextFromTable(table, row, 0) == hy and self.getItemTextFromTable(table, row, 1) == ccfx:
                 return row
         return table.rowCount()
 
