@@ -225,7 +225,7 @@ class MainWindow(QMainWindow):
         sysCdMenu1 = QMenu("当日查询", self)
         sysCdMenu1.addAction(QAction("委托/申报", self))
         self.lscjcxAction = QAction("成交查询", self)
-        self.lscjcxAction.triggered.connect(self.lscjcx.exec)
+        # self.lscjcxAction.triggered.connect(self.lscjcx.exec)
         sysCdMenu1.addAction(self.lscjcxAction)
         sysCdMenu1.addAction(QAction("延期持仓明细", self))
         sysCdMenu1.addAction(QAction("出入金明细", self))
@@ -346,6 +346,8 @@ class MainWindow(QMainWindow):
             if self.ui.hyCombo.currentIndex() == 2:
                 ccyk12 = zcc10 * (ccjj8 - zdj14) * 100
                 zybzj11 = kcjj9* zcc10 * 11
+            if self.ui.ccTbl.item(currentRow, 1).text() == "多":
+                ccyk12 = -ccyk12
             self.ui.ccTbl.item(currentRow, 7).setText(str(zcc10))  
             self.ui.ccTbl.item(currentRow, 3).setText(self.baoliu(2, kcjj9))
             self.ui.ccTbl.item(currentRow, 6).setText(self.baoliu(2, zybzj11))
