@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from jiaogedan import *
+import lscjcx
 import login_ui
 import sys
 import os
@@ -46,6 +47,12 @@ class LoginDialog(QDialog):
         self.loginState.emit(self.flag)
         e.accept()
 
+class LishiChengjiaoChaxun(QDialog):
+    def __init__(self, parent=None):
+        super(LishiChengjiaoChaxun, self).__init__(parent)
+        self.ui = lscjcx.Ui_lscjcx()
+        self.ui.setupUi(self)
+
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -70,6 +77,7 @@ class MainWindow(QMainWindow):
             self.ui.frame01.setStyleSheet("#frame01{background:url(:/src/src/border.png);border: 1px solid rgb(160,160,160); }")
             self.ui.frame10.setStyleSheet("#frame10{background:url(:/src/src/border.png);border: 1px solid rgb(160,160,160); }")
             self.ui.frame11.setStyleSheet("#frame11{background:url(:/src/src/border.png);border: 1px solid rgb(160,160,160); }")
+        self.lscjcx = LishiChengjiaoChaxun()
         self.dragPosition = QPoint(0, 0)
         self.oldPos1 = 0
         self.mousePressedFlag = False
@@ -159,7 +167,9 @@ class MainWindow(QMainWindow):
                     self.ui.b1l, self.ui.b2l, self.ui.b3l, self.ui.b4l, self.ui.b5l]
         sysCdMenu1 = QMenu("当日查询", self)
         sysCdMenu1.addAction(QAction("委托/申报", self))
-        sysCdMenu1.addAction(QAction("成交查询", self))
+        self.lscjcxAction = QAction("成交查询", self)
+        self.lscjcxAction.triggered.connect(self.lscjcx.exec)
+        sysCdMenu1.addAction(self.lscjcxAction)
         sysCdMenu1.addAction(QAction("延期持仓明细", self))
         sysCdMenu1.addAction(QAction("出入金明细", self))
         sysCdMenu2 = QMenu("历史查询", self)
@@ -220,33 +230,13 @@ class MainWindow(QMainWindow):
         self.ui.qcBtn.clicked.connect(self.qcBtnClicked)
         self.ui.gdBtn.clicked.connect(self.gdBtnClicked)
 
-        self.ui.kdcBtn.clicked.connect(self.kdcBtnClicked)
+        # self.ui.kdcBtn.clicked.connect(self.kdcBtnClicked)
         self.ui.pcBtn2.clicked.connect(self.pcBtn2Clicked)
         self.ui.fsBtn.clicked.connect(self.fsBtnClicked)
 
     def showOrNot(self, flag):
         if flag == 0:
             sys.exit(0)
-
-    def kdcBtnClicked(self):
-        hydm = self.ui.hyCombo.currentText()
-        ccfx = "多"
-        if self.maiType == maiTypes[1]:
-            ccfx = "空"
-        # self.history.append([hydm, jylx, wtjg])
-        countRow = self.ui.ccTbl.rowCount()
-        self.ui.ccTbl.insertRow(countRow)
-        self.ui.ccTbl.setRowHeight(countRow, 21)
-        self.ui.ccTbl.setItem(countRow, 0, self.getTableItem(countRow, hydm))
-        self.ui.ccTbl.setItem(countRow, 1, self.getTableItem(countRow, ccfx))
-        self.ui.ccTbl.setItem(countRow, 2, self.getTableItem(countRow, str(self.ui.ssSpin.value())))
-        self.ui.ccTbl.setItem(countRow, 3, self.getTableItem(countRow, str("0")))
-        self.ui.ccTbl.setItem(countRow, 4, self.getTableItem(countRow, str("0")))
-        self.ui.ccTbl.setItem(countRow, 5, self.getTableItem(countRow, '0'))
-        self.ui.ccTbl.setItem(countRow, 6, self.getTableItem(countRow, '0'))
-        self.ui.ccTbl.setItem(countRow, 7, self.getTableItem(countRow, str(self.ui.ssSpin.value())))
-        self.ui.ccTbl.setItem(countRow, 8, self.getTableItem(countRow, '0'))
-        self.ui.ccTbl.setItem(countRow, 9, self.getTableItem(countRow, '0'))
 
     def openCjTblMenu(self, pos):
         pos += (self.ui.frame11.pos() + self.ui.cjTbl.pos())
@@ -505,9 +495,28 @@ class MainWindow(QMainWindow):
                 currentKc = int(self.getItemTextFromTable(self.ui.kcTbl, kcRow, 1))
                 self.ui.kcTbl.item(kcRow, 1).setText(str(amt+currentKc))
                 self.ui.kcTbl.item(kcRow, 2).setText(str(amt+currentKc))
-            
-        # while(self.ui.cjTbl.rowCount()):
-        #     self.ui.cjTbl.removeRow(0)
+            ccfx = self.getItemTextFromTable(self.ui.cjTbl, row, 1)[3]
+            ccRow = self.checkHyCcfxInTable(self.ui.ccTbl, hy, ccfx)
+            if ccRow == self.ui.ccTbl.rowCount():
+                countRow = self.ui.ccTbl.rowCount()
+                self.ui.ccTbl.insertRow(countRow)
+                self.ui.ccTbl.setRowHeight(countRow, 21)
+                self.ui.ccTbl.setItem(countRow, 0, self.getTableItem(countRow, hy))
+                self.ui.ccTbl.setItem(countRow, 1, self.getTableItem(countRow, ccfx))
+                self.ui.ccTbl.setItem(countRow, 2, self.getTableItem(countRow, '0'))
+                self.ui.ccTbl.setItem(countRow, 3, self.getTableItem(countRow, "0"))
+                self.ui.ccTbl.setItem(countRow, 4, self.getTableItem(countRow, "0"))
+                self.ui.ccTbl.setItem(countRow, 5, self.getTableItem(countRow, '0'))
+                self.ui.ccTbl.setItem(countRow, 6, self.getTableItem(countRow, '0'))
+                self.ui.ccTbl.setItem(countRow, 7, self.getTableItem(countRow, '0'))
+                self.ui.ccTbl.setItem(countRow, 8, self.getTableItem(countRow, '0'))
+                self.ui.ccTbl.setItem(countRow, 9, self.getTableItem(countRow, self.getItemTextFromTable(self.ui.cjTbl, row, 3)))
+            else:
+                amt = int(self.getItemTextFromTable(self.ui.cjTbl, row, 3))
+                jc = int(self.getItemTextFromTable(self.ui.ccTbl, ccRow, 9))
+                self.ui.ccTbl.item(ccRow, 9).setText(str(amt+jc))
+        while(self.ui.cjTbl.rowCount()):
+            self.ui.cjTbl.removeRow(0)
 
     def recordHistory(self):
         if not os.path.exists(historyFile):
@@ -525,6 +534,12 @@ class MainWindow(QMainWindow):
     def checkHyInTable(self, table, hy):
         for row in range(table.rowCount()):
             if self.getItemTextFromTable(table, row, 0) == hy:
+                return row
+        return table.rowCount()
+
+    def checkHyCcfxInTable(self, table, hy, ccfx):
+        for row in range(table.rowCount()):
+            if self.getItemTextFromTable(table, row, 0) == hy and self.getItemTextFromTable(table, row, 1) == ccfx:
                 return row
         return table.rowCount()
 
